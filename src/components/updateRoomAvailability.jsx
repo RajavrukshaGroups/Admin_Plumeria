@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function RoomAvailabilityForm() {
+  const navigate = useNavigate();
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [roomTypes, setRoomTypes] = useState([]);
   const [formData, setFormData] = useState({
@@ -60,7 +63,7 @@ function RoomAvailabilityForm() {
 
     const roomsEntered = parseInt(formData.availableRooms);
     if (maxLimit !== null && roomsEntered > maxLimit) {
-      alert(
+      toast.error(
         `You can't set the availability beyond the maximum of ${maxLimit} rooms.`
       );
       return;
@@ -68,12 +71,13 @@ function RoomAvailabilityForm() {
     axiosInstance
       .put("/admin/updateroomsavailability", formData)
       .then(() => {
-        alert("Room availability added!");
+        toast.success("Room availability updated!");
         setFormData({ roomType: "", date: "", availableRooms: "" });
+        navigate("/");
       })
       .catch((err) => {
         console.error("Submission failed:", err);
-        alert("Something went wrong.");
+        toast.error("Something went wrong while updating.");
       });
   };
 
