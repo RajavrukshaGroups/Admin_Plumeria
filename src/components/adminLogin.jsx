@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 const Login = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -17,18 +18,16 @@ const Login = () => {
       navigate("/");
     }
   }, [isAuthenticated]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!email || !password) return alert("Please fill in the email and password");
-
     try {
       const data = await Signin(email, password);
       if (data.success) {
         alert("Login Successful");
-
         // Save token and user to Redux
         dispatch(loginSuccess({ token: data.token, user: data.user }));
-
         navigate("/");
       } else {
         alert(data.message);
