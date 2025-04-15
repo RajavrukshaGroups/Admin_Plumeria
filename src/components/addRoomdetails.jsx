@@ -188,7 +188,11 @@ const handleSubmit = async (e) => {
           {roomType && (
             <>
               {/* Room Info and Max Rooms */}
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+              Room Info
+            </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
+            
                 <input
                   className="input"
                   type="text"
@@ -196,6 +200,7 @@ const handleSubmit = async (e) => {
                   value={roomInfo}
                   onChange={(e) => setRoomInfo(e.target.value)}
                 />
+                
                 <input
                   className="input"
                   type="number"
