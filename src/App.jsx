@@ -9,6 +9,7 @@ import UpdateRoomAvailability from "./components/updateRoomAvailability";
 import RoomAvailabilityMain from "./pages/updateRoomAvailability";
 import EditRoomAvailability from "./components/editRoomAvailability";
 import EditRoomAvailabilityForm from "./components/editRoomAvailability";
+import AdminCreateBooking from "./components/adminCreateBooking";
 function App() {
   return (
     <Router>
@@ -21,6 +22,10 @@ function App() {
           <Route
             path="/edit-room-availability/:id"
             element={<EditRoomAvailabilityForm />}
+          />
+          <Route
+            path="/admin-create-booking"
+            element={<AdminCreateBooking />}
           />
         </Routes>
       </div>
