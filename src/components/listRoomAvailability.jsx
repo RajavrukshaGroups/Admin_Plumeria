@@ -17,6 +17,9 @@ const ListRoomAvailability = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [filterDate, setFilterDate] = useState("");
   const [filterRoomType, setFilterRoomType] = useState("");
+  const [filterError, setFilterError] = useState("");
+
+  const [roomTypes, setRoomTypes] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -34,6 +37,13 @@ const ListRoomAvailability = () => {
       })
       .finally(() => setLoading(false));
   }, [currentPage]);
+
+  useEffect(() => {
+    axiosInstance
+      .get("/rooms")
+      .then((data) => setRoomTypes(data.data)) // data already contains response body
+      .catch((err) => console.error("Failed to fetch room types:", err));
+  }, []);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
@@ -104,16 +114,23 @@ const ListRoomAvailability = () => {
     const queryString = queryParams.length ? `?${queryParams.join("&")}` : "";
 
     setLoading(true);
+    setFilterError("");
     axiosInstance
       .get(`/admin/filterroomavailability${queryString}`)
       .then((res) => {
-        setAvailabilityList(res.data);
-        setTotalCount(res.data.length);
+        console.log("res-filter", res);
+        setAvailabilityList(res);
+        setTotalCount(res.length);
         setCurrentPage(1);
         setShowFilterModal(false);
       })
       .catch((err) => {
         console.error("Failed to filter data:", err);
+        if (err.response && err.response.data && err.response.data.error) {
+          setFilterError(err.response.data.error);
+        } else {
+          setFilterError("Something went wrong.Please try again.");
+        }
         setAvailabilityList([]);
       })
       .finally(() => setLoading(false));
@@ -267,9 +284,12 @@ const ListRoomAvailability = () => {
                       value={filterRoomType}
                       onChange={(e) => setFilterRoomType(e.target.value)}
                     >
-                      <option value="">All Types</option>
-                      <option value="Deluxe">Deluxe Rooms</option>
-                      <option value="Villa">Villa Rooms</option>
+                      <option value="All Types">All Types</option>
+                      {roomTypes.map((room) => (
+                        <option key={room._id} value={room.roomType}>
+                          {room.roomType}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -282,7 +302,10 @@ const ListRoomAvailability = () => {
                   </button>
                   <button
                     onClick={applyFilters}
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    disabled={!filterDate}
+                    className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 ${
+                      !filterDate ? "cursor-not-allowed opacity-50" : ""
+                    }`}
                   >
                     Apply
                   </button>
