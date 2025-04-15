@@ -326,6 +326,25 @@ const handleSubmit = async (e) => {
                   ))}
                 </div>
               </div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Terms
+                </label>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                 <input
+                  className="input"
+                  type="text"
+                  placeholder="Terms (comma separated)"
+                  value={terms}
+                  onChange={(e) => setTerms(e.target.value)}
+                />
+                {/* <input
+                  className="input"
+                  type="text"
+                  placeholder="Bed Type (King/Queen)"
+                  value={bedType}
+                  onChange={(e) => setBedType(e.target.value)}
+                /> */}
+              </div>
 
               {/* Plans */}
               <div className="mb-6">
