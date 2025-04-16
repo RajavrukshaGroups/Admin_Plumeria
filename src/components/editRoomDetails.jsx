@@ -1,63 +1,129 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
+import { useParams, useNavigate } from "react-router-dom";
 
+function EditRoomDetails() {
+  const { roomId } = useParams(); // assuming you're passing :roomId in your route
+  const navigate = useNavigate();
 
-function AddRoomdetails() {
-  // Basic Room fields
+  // State declarations same as AddRoomdetails
   const [roomType, setRoomType] = useState("");
   const [maxRoomsAvailable, setMaxRoomsAvailable] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  // Capacity
   const [maxPersons, setMaxPersons] = useState("");
   const [maxAdults, setMaxAdults] = useState("");
   const [maxChildren, setMaxChildren] = useState("");
-  // Room Info
   const [roomInfo, setRoomInfo] = useState("");
   const [bedType, setBedType] = useState("");
   const [terms, setTerms] = useState("");
-  // Amenities and Plans
   const [amenities, setAmenities] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [plans, setPlans] = useState([]);
-  
-  // File Upload
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [menuDetails, setMenuDetails] = useState({
     welcomeDrinks: [],
     breakFast: [],
     dinner: [],
-    snacks: []
+    snacks: [],
   });
-  
 
-  console.log(amenities,'amenities check')
+  useEffect(() => {
+    async function fetchRoomsData() {
+      try {
+        const response = await axiosInstance.get("/admin/roomsdata");
+        console.log(response, "Fetched rooms data");
+        const rooms = response;
+        console.log(rooms, "this is fetched data");
+        const room = rooms.find((r) => r._id === roomId); // match by ID
+        console.log(room, "room dtaaass");
+        if (room) {
+          setRoomType(room.roomType || "");
+          setMaxRoomsAvailable(room.maxRoomsAvailable || "");
+          setCheckIn(room.checkIn || "");
+          setCheckOut(room.checkOut || "");
+          setMaxPersons(room.capacity?.maxPersons || "");
+          setMaxAdults(room.capacity?.maxAdults || "");
+          setMaxChildren(room.capacity?.maxChildren || "");
+          setRoomInfo(room.roomInfo?.description || "");
+          setBedType(room.roomInfo?.bed || "");
+          setTerms(room.roomInfo?.terms || []);
+          setAmenities(room.roomInfo?.amenities || []);
+          setPlans(room.plans || []);
+          if (room.images) {
+            setPreviews(room.images); // URLs
+          }
+        } else {
+          console.error("Room not found");
+        }
+      } catch (error) {
+        console.error("Error fetching room data:", error);
+      }
+    }
+
+    fetchRoomsData();
+  }, [roomId]);
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    const totalFiles = files.length + selectedFiles.length;
-    if (totalFiles > 4) {
-      alert("You can only upload up to 4 images.");
-      return;
-    }
-    const updatedFiles = [...files, ...selectedFiles];
-    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-    setFiles(updatedFiles);
-    setPreviews((prev) => [...prev, ...newPreviews]);
+    setFiles(selectedFiles);
+
+    const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
+    setPreviews(previewUrls);
   };
 
   const handleAddAmenity = () => {
-    if (inputValue.trim() !== "" && !amenities.includes(inputValue.trim())) {
+    if (inputValue.trim()) {
       setAmenities([...amenities, inputValue.trim()]);
       setInputValue("");
     }
   };
 
   const handleRemoveAmenity = (index) => {
-    const newAmenities = [...amenities];
-    newAmenities.splice(index, 1);
-    setAmenities(newAmenities);
+    const updated = [...amenities];
+    updated.splice(index, 1);
+    setAmenities(updated);
+  };
+
+  // const handlePlanChange = (index, field, value) => {
+  //   const updatedPlans = [...plans];
+  //   updatedPlans[index] = {
+  //     ...updatedPlans[index],
+  //     [field]: value,
+  //   };
+  //   setPlans(updatedPlans);
+  // };
+  const handlePlanChange = (index, field, value) => {
+    const updatedPlans = [...plans];
+    updatedPlans[index] = {
+      ...updatedPlans[index],
+      [field]: value,
+    };
+    setPlans(updatedPlans);
+  };
+  
+  
+const handleNestedPlanChange = (index, path, value) => {
+  const updatedPlans = [...plans];
+  let current = updatedPlans[index];
+
+  // Traverse the path to update the nested field
+  for (let i = 0; i < path.length - 1; i++) {
+    const key = path[i];
+    current[key] = current[key] || {};
+    current = current[key];
+  }
+
+  current[path[path.length - 1]] = value;
+  setPlans(updatedPlans);
+};
+
+
+  const handleRemovePlan = (index) => {
+    const updated = [...plans];
+    updated.splice(index, 1);
+    setPlans(updated);
   };
 
   const handleAddPlan = () => {
@@ -74,102 +140,80 @@ function AddRoomdetails() {
           welcomeDrinks: [],
           breakFast: [],
           dinner: [],
-          snacks: []
+          snacks: [],
         },
         services: [],
       },
     ]);
   };
 
-  const handleRemovePlan = (index) => {
-    const updatedPlans = plans.filter((_, i) => i !== index);
-    setPlans(updatedPlans);
-  };
+  const handleUpdate = async (e) => {
+    e.preventDefault();
 
-  const handlePlanChange = (index, field, value) => {
-    const updatedPlans = [...plans];
-    updatedPlans[index][field] = value;
-    setPlans(updatedPlans);
-  };
-  const handleMenuChange = (e, type) => {
-    const values = e.target.value.split(',').map(item => item.trim());
-    setMenuDetails(prev => ({
-      ...prev,
-      [type]: values
-    }));
-  };
-  const handleMenuDetailChange = (index, type, value) => {
-    const updatedPlans = [...plans];
-    updatedPlans[index].menuDetails[type] = value.split(',').map(item => item.trim());
-    setPlans(updatedPlans);
-  };
-  
-  
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const roomData = {
-    roomType,
-    maxRoomsAvailable: parseInt(maxRoomsAvailable, 10),
-    checkIn,
-    checkOut,
-    capacity: {
-      maxPersons: parseInt(maxPersons, 10),
-      maxAdults: parseInt(maxAdults, 10),
-      maxChildren: parseInt(maxChildren, 10),
-    },
-    roomInfo: {
-      description: roomInfo,
-      bed: bedType,
-    },
-    terms,
-    amenities,
-    plans: plans.map((plan) => ({
-      name: plan.name,
-      price: {
-        twoGuests: {
-          withGst: parseFloat(plan.twoGuestsWithGST),
-          withoutGst: parseFloat(plan.twoGuestsWithoutGST),
-        },
-        extraAdult: {
-          withGst: parseFloat(plan.extraAdultWithGST),
-          withoutGst: parseFloat(plan.extraAdultWithoutGST),
-        },
+    const updatedRoomData = {
+      roomType,
+      maxRoomsAvailable: parseInt(maxRoomsAvailable),
+      checkIn,
+      checkOut,
+      capacity: {
+        maxPersons: parseInt(maxPersons),
+        maxAdults: parseInt(maxAdults),
+        maxChildren: parseInt(maxChildren),
       },
-      complimentary: plan.complimentary.split(",").map((item) => item.trim()),
-      services: plan.services,
-      menuDetails: plan.menuDetails,
-    })),
-  };
-
-  const formData = new FormData();
-  formData.append("roomData", JSON.stringify(roomData));
-  files.forEach((file) => {
-    formData.append("images", file);
-  });
-
-  try {
-    const response = await axiosInstance.post("/admin/rooms", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+      roomInfo: {
+        description: roomInfo,
+        bed: bedType,
       },
-    });
-    console.log(response.data, "this is the data");
-    alert("Room added successfully!");
-  } catch (error) {
-    console.error("Error saving room data:", error.response || error.message);
-    alert("Failed to save room data.");
-  }
-};
+      terms,
+      amenities,
+      plans: plans.map((plan) => ({
+        name: plan.name,
+        price: {
+          twoGuests: {
+            withGst: parseFloat(plan.twoGuestsWithGST),
+            withoutGst: parseFloat(plan.twoGuestsWithoutGST),
+          },
+          extraAdult: {
+            withGst: parseFloat(plan.extraAdultWithGST),
+            withoutGst: parseFloat(plan.extraAdultWithoutGST),
+          },
+        },
+        complimentary: Array.isArray(plan.complimentary)
+        ? plan.complimentary
+        : (plan.complimentary || "").split(",").map(item => item.trim())|| [],
+        services: plan.services || [],
+        menuDetails: plan.menuDetails || {},
+      })),
+    };
 
+    const formData = new FormData();
+    formData.append("roomData", JSON.stringify(updatedRoomData));
+    files.forEach((file) => formData.append("images", file));
+
+    try {
+      const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      alert("Room updated successfully!");
+      navigate("/rooms"); // or any route to redirect
+    } catch (err) {
+      console.error("Error updating room:", err.response || err.message);
+      alert("Failed to update room.");
+    }
+  };
 
   return (
     <div className="bg-gray-100 flex bg-local">
       <div className="bg-gray-100 mx-auto max-w-6xl bg-white py-20 px-12 lg:px-24 shadow-xl mb-24">
         <h1 className="text-3xl font-bold justify-center items-center m-auto flex underline">
-          Add Room
+          Edit Room
         </h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleUpdate}>
           {/* Room Type */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -186,14 +230,12 @@ const handleSubmit = async (e) => {
             </select>
           </div>
 
-          {roomType && (
             <>
               {/* Room Info and Max Rooms */}
               <label className="block text-sm font-medium text-gray-700 mb-2">
-              Room Info
-            </label>
+                Room Info
+              </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
-            
                 <input
                   className="input"
                   type="text"
@@ -201,7 +243,7 @@ const handleSubmit = async (e) => {
                   value={roomInfo}
                   onChange={(e) => setRoomInfo(e.target.value)}
                 />
-                
+
                 <input
                   className="input"
                   type="number"
@@ -210,7 +252,6 @@ const handleSubmit = async (e) => {
                   onChange={(e) => setMaxRoomsAvailable(e.target.value)}
                 />
               </div>
-
               {/* Check-in and Check-out Time Inputs */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
@@ -260,6 +301,7 @@ const handleSubmit = async (e) => {
                   ))}
                 </div>
               </div>
+
               {/* Amenities */}
               <div className="mb-6">
                 <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -299,25 +341,17 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Terms
-                </label>
+                Terms
+              </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
-                 <input
+                <input
                   className="input"
                   type="text"
                   placeholder="Terms (comma separated)"
                   value={terms}
                   onChange={(e) => setTerms(e.target.value)}
                 />
-                {/* <input
-                  className="input"
-                  type="text"
-                  placeholder="Bed Type (King/Queen)"
-                  value={bedType}
-                  onChange={(e) => setBedType(e.target.value)}
-                /> */}
               </div>
-
               {/* Plans */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-4">Plans</h3>
@@ -325,7 +359,7 @@ const handleSubmit = async (e) => {
                   <div key={index} className="border p-4 mb-4 rounded">
                     <div className="flex justify-between items-center mb-4">
                       <input
-                        className="input flex-1"
+                        className="input"
                         type="text"
                         placeholder="Plan Name (e.g., Lite, Plus, Max)"
                         value={plan.name}
@@ -346,37 +380,37 @@ const handleSubmit = async (e) => {
                         className="input"
                         type="number"
                         placeholder="Two Guests With GST"
-                        value={plan.twoGuestsWithGST}
+                        value={plan.price?.twoGuests?.withGst || ""}
                         onChange={(e) =>
-                          handlePlanChange(index, "twoGuestsWithGST", e.target.value)
+                          handleNestedPlanChange(index, ["price", "twoGuests", "withGst"], e.target.value)
                         }
                       />
                       <input
                         className="input"
                         type="number"
                         placeholder="Two Guests Without GST"
-                        value={plan.twoGuestsWithoutGST}
+                        value={plan.price?.twoGuests?.withoutGst || ""}
                         onChange={(e) =>
-                          handlePlanChange(index, "twoGuestsWithoutGST", e.target.value)
+                          handleNestedPlanChange(index, ["price", "twoGuests", "withoutGst"], e.target.value)
                         }
                       />
                       <input
                         className="input"
                         type="number"
                         placeholder="Extra Adult With GST"
-                        value={plan.extraAdultWithGST}
+                        value={plan.price?.extraAdult?.withGst || ""}
                         onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithGST", e.target.value)
+                          handleNestedPlanChange(index, ["price", "extraAdult", "withGst"], e.target.value)
                         }
                       />
                       <input
                         className="input"
                         type="number"
                         placeholder="Extra Adult Without GST"
-                        value={plan.extraAdultWithoutGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
-                        }
+                        value={plan.price?.extraAdult?.withoutGst || ""}
+        onChange={(e) =>
+          handleNestedPlanChange(index, ["price", "extraAdult", "withoutGst"], e.target.value)
+        }
                       />
                     </div>
                     <input
@@ -389,75 +423,55 @@ const handleSubmit = async (e) => {
                       }
                     />
 
-                {/* <textarea
-                  className="input mb-4 w-full p-2 border rounded"
-                  rows="3"
-                  placeholder="Menu Details (e.g., Veg Thali, Chicken Curry, etc...)"
-                  value={plan.menuDetails}
-                  onChange={(e) =>
-                    handlePlanChange(index, "menuDetails", e.target.value)
-                  }
-                /> */}
+                    {/* <div className="mt-4">
+                      <label className="block font-medium mb-1">
+                        Menu Details
+                      </label>
 
-<div className="mt-4">
-  <label className="block font-medium mb-1">Menu Details</label>
-
-  {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
-    <div className="mb-2" key={type}>
-      <label className="block text-sm capitalize text-gray-700 mb-1">
-        {type.replace(/([A-Z])/g, ' $1')}
-      </label>
-      <input
-        type="text"
-        className="input w-full"
-        placeholder={`Enter ${type} (comma separated)`}
-        value={plans[index].menuDetails[type]?.join(", ") || ""}
-        onChange={(e) =>
-          handleMenuDetailChange(index, type, e.target.value)
-        }
-      />
+                      {["welcomeDrinks", "breakFast", "dinner", "snacks"].map(
+                        (type) => (
+                          <div className="mb-2" key={type}>
+                            <label className="block text-sm capitalize text-gray-700 mb-1">
+                              {type.replace(/([A-Z])/g, " $1")}
+                            </label>
+                            <input
+                              type="text"
+                              className="input w-full"
+                              placeholder={`Enter ${type} (comma separated)`}
+                              value={
+                                plans[index].menuDetails[type]?.join(", ") || ""
+                              }
+                              onChange={(e) =>
+                                handleMenuDetailChange(
+                                  index,
+                                  type,
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                        )
+                      )}
+                    </div> */}
+                       <div className="mt-4">
+      <label className="block font-medium mb-1">Menu Details</label>
+      {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
+        <div className="mb-2" key={type}>
+          <label className="block text-sm capitalize text-gray-700 mb-1">
+            {type.replace(/([A-Z])/g, " $1")}
+          </label>
+          <input
+            type="text"
+            className="input w-full"
+            placeholder={`Enter ${type} (comma separated)`}
+            value={plan.menuDetails?.[type]?.join(", ") || ""}
+            onChange={(e) =>
+              handleNestedPlanChange(index, ["menuDetails", type], e.target.value.split(",").map((item) => item.trim()))
+            }
+          />
+        </div>
+      ))}
     </div>
-  ))}
-</div>
-
-
-
-                {/* <div>
-  <label>Welcome Drinks (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'welcomeDrinks')}
-    placeholder="e.g., juice, soda"
-  />
-</div>
-
-<div>
-  <label>Breakfast (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'breakFast')}
-    placeholder="e.g., idli, dosa, coffee"
-  />
-</div>
-
-<div>
-  <label>Dinner (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'dinner')}
-    placeholder="e.g., biryani, roti"
-  />
-</div>
-
-<div>
-  <label>Snacks (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'snacks')}
-    placeholder="e.g., samosa, chips"
-  />
-</div> */}
-
                     <section>
                       <label
                         className="uppercase tracking-wide text-black text-xs font-bold mb-2"
@@ -470,42 +484,54 @@ const handleSubmit = async (e) => {
                           className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
                           type="number"
                           placeholder="Max Persons"
+                          value={maxPersons}
                           onChange={(e) => setMaxPersons(e.target.value)}
                         />
                         <input
                           className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
                           type="number"
                           placeholder="Max Adults"
+                          value={maxAdults}
                           onChange={(e) => setMaxAdults(e.target.value)}
                         />
                         <input
                           className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
                           type="number"
                           placeholder="Max Children"
+                          value={maxChildren}
                           onChange={(e) => setMaxChildren(e.target.value)}
                         />
                       </div>
                     </section>
                     <div className="flex gap-4 flex-wrap">
-                      {["WiFi", "Breakfast", "Spa", "Taxes Included"].map((service) => (
-                        <label key={service} className="flex items-center gap-2 text-sm">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox"
-                            checked={plan.services.includes(service)}
-                            onChange={(e) => {
-                              const updatedServices = e.target.checked
-                                ? [...plan.services, service]
-                                : plan.services.filter((s) => s !== service);
-                              handlePlanChange(index, "services", updatedServices);
-                            }}
-                          />
-                          {service}
-                        </label>
-                      ))}
+                      {["WiFi", "Breakfast", "Spa", "Taxes Included"].map(
+                        (service) => (
+                          <label
+                            key={service}
+                            className="flex items-center gap-2 text-sm"
+                          >
+                           <input
+                      type="checkbox"
+                      className="form-checkbox"
+                      checked={Array.isArray(plan.services) && plan.services.includes(service)}
+                      onChange={(e) => {
+                        const currentServices = Array.isArray(plan.services) ? plan.services : [];
+
+                        const updatedServices = e.target.checked
+                          ? [...currentServices, service]
+                          : currentServices.filter((s) => s !== service);
+
+                        handlePlanChange(index, "services", updatedServices);
+                      }}
+                    />
+                            {service}
+                          </label>
+                        )
+                      )}
                     </div>
                   </div>
                 ))}
+            
                 <button
                   type="button"
                   onClick={handleAddPlan}
@@ -515,7 +541,6 @@ const handleSubmit = async (e) => {
                 </button>
               </div>
             </>
-          )}
 
           <button
             type="submit"
@@ -529,15 +554,4 @@ const handleSubmit = async (e) => {
   );
 }
 
-const style = document.createElement("style");
-style.textContent = `.input { 
-  width: 100%; padding: 0.75rem 1rem; 
-  border: 1px solid #d1d5db; 
-  border-radius: 0.5rem; 
-  background-color: #f3f4f6; 
-  outline: none; 
-  font-size: 0.875rem; 
-}`;
-document.head.appendChild(style);
-
-export default AddRoomdetails;
+export default EditRoomDetails;
