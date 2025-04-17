@@ -65,13 +65,37 @@ function EditRoomDetails() {
     fetchRoomsData();
   }, [roomId]);
 
+  // const handleFileChange = (e) => {
+  //   const selectedFiles = Array.from(e.target.files);
+  //   setFiles(selectedFiles);
+
+  //   const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
+  //   setPreviews(previewUrls);
+  // };
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-
-    const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
-    setPreviews(previewUrls);
+    const totalFiles = files.length + selectedFiles.length;
+    if (totalFiles > 4) {
+      alert("You can only upload up to 4 images.");
+      return;
+    }
+    setFiles(prev => [...prev, ...selectedFiles]);
+    const previewUrls = selectedFiles.map(file => URL.createObjectURL(file));
+    setPreviews(prev => [...prev, ...previewUrls]);
   };
+  
+  const removeImage = (index) => {
+    const updatedFiles = [...files];
+    const updatedPreviews = [...previews];
+  
+    updatedFiles.splice(index, 1);
+    updatedPreviews.splice(index, 1);
+  
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
+  };
+  
 
   const handleAddAmenity = () => {
     if (inputValue.trim()) {
@@ -170,20 +194,21 @@ const handleNestedPlanChange = (index, path, value) => {
         name: plan.name,
         price: {
           twoGuests: {
-            withGst: parseFloat(plan.twoGuestsWithGST),
-            withoutGst: parseFloat(plan.twoGuestsWithoutGST),
+            withGst: parseFloat(plan.price?.twoGuests?.withGst) || 0,
+            withoutGst: parseFloat(plan.price?.twoGuests?.withoutGst) || 0,
           },
           extraAdult: {
-            withGst: parseFloat(plan.extraAdultWithGST),
-            withoutGst: parseFloat(plan.extraAdultWithoutGST),
+            withGst: parseFloat(plan.price?.extraAdult?.withGst) || 0,
+            withoutGst: parseFloat(plan.price?.extraAdult?.withoutGst) || 0,
           },
         },
         complimentary: Array.isArray(plan.complimentary)
-        ? plan.complimentary
-        : (plan.complimentary || "").split(",").map(item => item.trim())|| [],
+          ? plan.complimentary
+          : (plan.complimentary || "").split(",").map(item => item.trim()),
         services: plan.services || [],
         menuDetails: plan.menuDetails || {},
-      })),
+      }))
+   
     };
 
     const formData = new FormData();
@@ -200,7 +225,7 @@ const handleNestedPlanChange = (index, path, value) => {
         }
       );
       alert("Room updated successfully!");
-      navigate("/rooms"); // or any route to redirect
+      navigate("/roomsTable"); // or any route to redirect
     } catch (err) {
       console.error("Error updating room:", err.response || err.message);
       alert("Failed to update room.");
@@ -283,6 +308,34 @@ const handleNestedPlanChange = (index, path, value) => {
 
               {/* File Upload */}
               <div className="mb-6">
+                      <input
+                        className="input"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileChange}
+                      />
+                      <div className="flex flex-wrap gap-4 mt-4">
+                        {previews.map((src, index) => (
+                          <div key={index} className="relative w-24 h-24">
+                            <img
+                              src={src}
+                              alt={`Preview ${index}`}
+                              className="w-full h-full object-cover rounded border"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-[-8px] right-[-8px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+              {/* <div className="mb-6">
                 <input
                   className="input"
                   type="file"
@@ -300,7 +353,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     />
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               {/* Amenities */}
               <div className="mb-6">
@@ -339,6 +392,37 @@ const handleNestedPlanChange = (index, path, value) => {
                     </span>
                   ))}
                 </div>
+                <section>
+                      <label
+                        className="uppercase tracking-wide text-black text-xs font-bold mb-2"
+                        htmlFor="capacity"
+                      >
+                        Capacity
+                      </label>
+                      <div className="grid grid-cols-3 gap-4">
+                        <input
+                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          type="number"
+                          placeholder="Max Persons"
+                          value={maxPersons}
+                          onChange={(e) => setMaxPersons(e.target.value)}
+                        />
+                        <input
+                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          type="number"
+                          placeholder="Max Adults"
+                          value={maxAdults}
+                          onChange={(e) => setMaxAdults(e.target.value)}
+                        />
+                        <input
+                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          type="number"
+                          placeholder="Max Children"
+                          value={maxChildren}
+                          onChange={(e) => setMaxChildren(e.target.value)}
+                        />
+                      </div>
+                    </section>
               </div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
                 Terms
@@ -472,37 +556,7 @@ const handleNestedPlanChange = (index, path, value) => {
         </div>
       ))}
     </div>
-                    <section>
-                      <label
-                        className="uppercase tracking-wide text-black text-xs font-bold mb-2"
-                        htmlFor="capacity"
-                      >
-                        Capacity
-                      </label>
-                      <div className="grid grid-cols-3 gap-4">
-                        <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
-                          type="number"
-                          placeholder="Max Persons"
-                          value={maxPersons}
-                          onChange={(e) => setMaxPersons(e.target.value)}
-                        />
-                        <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
-                          type="number"
-                          placeholder="Max Adults"
-                          value={maxAdults}
-                          onChange={(e) => setMaxAdults(e.target.value)}
-                        />
-                        <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
-                          type="number"
-                          placeholder="Max Children"
-                          value={maxChildren}
-                          onChange={(e) => setMaxChildren(e.target.value)}
-                        />
-                      </div>
-                    </section>
+                  
                     <div className="flex gap-4 flex-wrap">
                       {["WiFi", "Breakfast", "Spa", "Taxes Included"].map(
                         (service) => (

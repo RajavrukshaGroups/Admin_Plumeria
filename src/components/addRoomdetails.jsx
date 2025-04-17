@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axiosInstance from "../api/interceptors";
+import { useParams, useNavigate } from "react-router-dom";
 
 
 function AddRoomdetails() {
+  const navigate = useNavigate();
   // Basic Room fields
   const [roomType, setRoomType] = useState("");
   const [maxRoomsAvailable, setMaxRoomsAvailable] = useState("");
@@ -34,18 +36,45 @@ function AddRoomdetails() {
 
   console.log(amenities,'amenities check')
 
+  // const handleFileChange = (e) => {
+  //   const selectedFiles = Array.from(e.target.files);
+  //   const totalFiles = files.length + selectedFiles.length;
+  //   if (totalFiles > 4) {
+  //     alert("You can only upload up to 4 images.");
+  //     return;
+  //   }
+  //   const updatedFiles = [...files, ...selectedFiles];
+  //   const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+  //   setFiles(updatedFiles);
+  //   setPreviews((prev) => [...prev, ...newPreviews]);
+  // };
+
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const totalFiles = files.length + selectedFiles.length;
+  
     if (totalFiles > 4) {
       alert("You can only upload up to 4 images.");
       return;
     }
-    const updatedFiles = [...files, ...selectedFiles];
-    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-    setFiles(updatedFiles);
-    setPreviews((prev) => [...prev, ...newPreviews]);
+  
+    setFiles(prev => [...prev, ...selectedFiles]);
+  
+    const newPreviews = selectedFiles.map(file => URL.createObjectURL(file));
+    setPreviews(prev => [...prev, ...newPreviews]);
   };
+  
+  const removeImage = (index) => {
+    const updatedFiles = [...files];
+    const updatedPreviews = [...previews];
+  
+    updatedFiles.splice(index, 1);
+    updatedPreviews.splice(index, 1);
+  
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
+  };
+  
 
   const handleAddAmenity = () => {
     if (inputValue.trim() !== "" && !amenities.includes(inputValue.trim())) {
@@ -156,6 +185,7 @@ const handleSubmit = async (e) => {
     });
     console.log(response.data, "this is the data");
     alert("Room added successfully!");
+    navigate("/roomsTable")
   } catch (error) {
     console.error("Error saving room data:", error.response || error.message);
     alert("Failed to save room data.");
@@ -240,26 +270,38 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
 
-              {/* File Upload */}
+           
               <div className="mb-6">
-                <input
-                  className="input"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <div className="flex flex-wrap gap-4 mt-4">
-                  {previews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      alt={`Preview ${index}`}
-                      className="w-24 h-24 object-cover rounded border"
-                    />
-                  ))}
-                </div>
-              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Images
+                  </label>
+                      <input
+                        className="input"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileChange}
+                      />
+                      <div className="flex flex-wrap gap-4 mt-4">
+                        {previews.map((src, index) => (
+                          <div key={index} className="relative w-24 h-24">
+                            <img
+                              src={src}
+                              alt={`Preview ${index}`}
+                              className="w-full h-full object-cover rounded border"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute top-[-8px] right-[-8px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
               {/* Amenities */}
               <div className="mb-6">
                 <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -323,7 +365,11 @@ const handleSubmit = async (e) => {
                 <h3 className="text-lg font-bold mb-4">Plans</h3>
                 {plans.map((plan, index) => (
                   <div key={index} className="border p-4 mb-4 rounded">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Plan Name
+                    </label>
                     <div className="flex justify-between items-center mb-4">
+                      
                       <input
                         className="input flex-1"
                         type="text"
@@ -341,7 +387,11 @@ const handleSubmit = async (e) => {
                         Remove
                       </button>
                     </div>
+                    {/* <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Two Guests With GST
+                    </label>
                     <div className="grid grid-cols-2 gap-4 mb-4">
+                      
                       <input
                         className="input"
                         type="number"
@@ -351,6 +401,9 @@ const handleSubmit = async (e) => {
                           handlePlanChange(index, "twoGuestsWithGST", e.target.value)
                         }
                       />
+                       <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Two Guests Without GST
+                    </label>
                       <input
                         className="input"
                         type="number"
@@ -378,7 +431,91 @@ const handleSubmit = async (e) => {
                           handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
                         }
                       />
+                    </div> */}
+                    <div className="grid grid-cols-2 gap-4 mb-4 items-center">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Two Guests With GST
+                  </label>
+                  <input
+                    className="input"
+                    type="number"
+                    placeholder="Two Guests With GST"
+                    value={plan.twoGuestsWithGST}
+                    onChange={(e) =>
+                      handlePlanChange(index, "twoGuestsWithGST", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Two Guests Without GST
+                  </label>
+                  <input
+                    className="input"
+                    type="number"
+                    placeholder="Two Guests Without GST"
+                    value={plan.twoGuestsWithoutGST}
+                    onChange={(e) =>
+                      handlePlanChange(index, "twoGuestsWithoutGST", e.target.value)
+                    }
+                    />
                     </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Two Guests With GST
+                  </label>
+                  <input
+                        className="input"
+                        type="number"
+                        placeholder="Extra Adult With GST"
+                        value={plan.extraAdultWithGST}
+                        onChange={(e) =>
+                          handlePlanChange(index, "extraAdultWithGST", e.target.value)
+                        }
+                      />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Two Guests Without GST
+                  </label>
+                 <input
+                        className="input"
+                        type="number"
+                        placeholder="Extra Adult Without GST"
+                        value={plan.extraAdultWithoutGST}
+                        onChange={(e) =>
+                          handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
+                        }
+                      /> 
+                    </div>
+
+
+                    
+                    {/* <input
+                        className="input"
+                        type="number"
+                        placeholder="Extra Adult With GST"
+                        value={plan.extraAdultWithGST}
+                        onChange={(e) =>
+                          handlePlanChange(index, "extraAdultWithGST", e.target.value)
+                        }
+                      />
+                      <input
+                        className="input"
+                        type="number"
+                        placeholder="Extra Adult Without GST"
+                        value={plan.extraAdultWithoutGST}
+                        onChange={(e) =>
+                          handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
+                        }
+                      /> 
+                      */}
+              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                   complimentary
+                  </label>
                     <input
                       className="input mb-4"
                       type="text"
@@ -399,64 +536,26 @@ const handleSubmit = async (e) => {
                   }
                 /> */}
 
-<div className="mt-4">
-  <label className="block font-medium mb-1">Menu Details</label>
+                <div className="mt-4">
+                  <label className="block font-medium mb-1">Menu Details</label>
 
-  {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
-    <div className="mb-2" key={type}>
-      <label className="block text-sm capitalize text-gray-700 mb-1">
-        {type.replace(/([A-Z])/g, ' $1')}
-      </label>
-      <input
-        type="text"
-        className="input w-full"
-        placeholder={`Enter ${type} (comma separated)`}
-        value={plans[index].menuDetails[type]?.join(", ") || ""}
-        onChange={(e) =>
-          handleMenuDetailChange(index, type, e.target.value)
-        }
-      />
-    </div>
-  ))}
-</div>
-
-
-
-                {/* <div>
-  <label>Welcome Drinks (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'welcomeDrinks')}
-    placeholder="e.g., juice, soda"
-  />
-</div>
-
-<div>
-  <label>Breakfast (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'breakFast')}
-    placeholder="e.g., idli, dosa, coffee"
-  />
-</div>
-
-<div>
-  <label>Dinner (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'dinner')}
-    placeholder="e.g., biryani, roti"
-  />
-</div>
-
-<div>
-  <label>Snacks (comma separated)</label>
-  <input
-    type="text"
-    onChange={(e) => handleMenuChange(e, 'snacks')}
-    placeholder="e.g., samosa, chips"
-  />
-</div> */}
+                  {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
+                    <div className="mb-2" key={type}>
+                      <label className="block text-sm capitalize text-gray-700 mb-1">
+                        {type.replace(/([A-Z])/g, ' $1')}
+                      </label>
+                      <input
+                        type="text"
+                        className="input w-full"
+                        placeholder={`Enter ${type} (comma separated)`}
+                        value={plans[index].menuDetails[type]?.join(", ") || ""}
+                        onChange={(e) =>
+                          handleMenuDetailChange(index, type, e.target.value)
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
 
                     <section>
                       <label

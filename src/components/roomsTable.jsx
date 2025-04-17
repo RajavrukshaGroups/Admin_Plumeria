@@ -4,6 +4,7 @@ import axiosInstance from ".././api/interceptors";
 import PlanModal from '../components/planModalComponent'; // Adjust the import path as necessary
 import { Link } from 'react-router-dom';
 import EditRoomDetails from './EditRoomDetails';
+
 const RoomsTable = () => {
   const [rooms, setRooms] = useState([]);
 // Inside your RoomsTable component
@@ -36,13 +37,13 @@ const handleSavePlan = (updatedPlan) => {
 };
 
   return (
-    <div className="p-6 sm:p-10 bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Rooms Overview</h2>
-      <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300 border-collapse">
-        <thead className="text-xs uppercase bg-gradient-to-r from-blue-200 to-blue-300 dark:from-gray-800 dark:to-gray-700 text-gray-800 dark:text-gray-300">
+    <div className="p-6 sm:p-10 bg-white :bg-gray-900 rounded-xl shadow-lg overflow-x-auto">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 :text-white">Rooms Overview</h2>
+      <table className="min-w-full text-sm text-left text-gray-700 :text-gray-300 border-collapse">
+        <thead className="text-xs uppercase bg-gradient-to-r from-blue-200 to-blue-300 :from-gray-800 :to-gray-700 text-gray-800 :text-gray-300">
           <tr>
             {["Room Type", "Max Rooms", "Capacity", "Check In", "Check Out", "Plans"].map((header, index) => (
-              <th key={index} className="px-6 py-4 border-b border-gray-300 dark:border-gray-600 text-sm font-semibold tracking-wide">
+              <th key={index} className="px-6 py-4 border-b border-gray-300 :border-gray-600 text-sm font-semibold tracking-wide">
                 {header}
               </th>
             ))}
@@ -52,32 +53,37 @@ const handleSavePlan = (updatedPlan) => {
           {rooms.map((room, i) => (
             <tr
               key={i}
-              className="hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-200"
+              className="hover:bg-blue-50 :hover:bg-gray-800 transition-colors duration-200"
             >
-              <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">{room.roomType}</td>
-              <td className="px-6 py-4">{room.maxRoomsAvailable}</td>
-              <td className="px-6 py-4">
+              <td className="px-6 py-4  text-gray-900 :text-white text-2xl font-bold">{room.roomType}</td>
+              <td className="px-6 py-4 text-2xl font-semibold">{room.maxRoomsAvailable}</td>
+              <td className="px-6 py-4 text-2xl font-semibold">
                 {room.capacity
                   ? `Adults: ${room.capacity.maxAdults}, Children: ${room.capacity.maxChildren}, Total: ${room.capacity.maxPersons}`
                   : "N/A"}
               </td>
-              <td className="px-6 py-4">{room.checkIn}</td>
-              <td className="px-6 py-4">{room.checkOut}</td>
+              <td className="px-6 py-4 text-2xl font-semibold">{room.checkIn}</td>
+              <td className="px-6 py-4 text-2xl font-semibold">{room.checkOut}</td>
               <td className="px-6 py-4">
-              <Link to={`/edit-room/${room._id}`}>Edit</Link>
+              <Link
+                  to={`/edit-room/${room._id}`}
+                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                >
+                  Edit
+                </Link>
 
               {room.plans.map((plan, j) => (
                       <div
                         key={j}
-                        className="mb-3 p-3 rounded bg-gray-100 dark:bg-gray-700 text-sm text-gray-800 dark:text-gray-200 shadow  hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                        className="mb-3 p-3 rounded bg-gray-100 :bg-gray-700 text-sm text-gray-800   dark:text-gray-200 shadow  hover:bg-gray-200 dark:hover:bg-gray-600 transition"
                        
                       >
-                        <p className="font-semibold text-blue-800 dark:text-blue-300">{plan.name}</p>
-                        <p>2 Guests (With GST): ₹{plan.price?.twoGuests?.withGst ?? "N/A"}</p>
-                        <p>2 Guests (Without GST): ₹{plan.price?.twoGuests?.withoutGst ?? "N/A"}</p>
-                        <p>Extra Adult (With GST): ₹{plan.price?.extraAdult?.withGst ?? "N/A"}</p>
-                        <p>Extra Adult (Without GST): ₹{plan.price?.extraAdult?.withoutGst ?? "N/A"}</p>
-                        <p>
+                        <p className="font-semibold text-blue-800 dark:text-blue-300 text-2xl">{plan.name}</p>
+                        <p className='text-gray-950 '>2 Guests (With GST): ₹{plan.price?.twoGuests?.withGst ?? "N/A"}</p>
+                        <p className='text-gray-950 '>2 Guests (Without GST): ₹{plan.price?.twoGuests?.withoutGst ?? "N/A"}</p>
+                        <p className='text-gray-950 '>Extra Adult (With GST): ₹{plan.price?.extraAdult?.withGst ?? "N/A"}</p>
+                        <p className='text-gray-950 '>Extra Adult (Without GST): ₹{plan.price?.extraAdult?.withoutGst ?? "N/A"}</p>
+                        <p className='text-gray-950 '>
                           <strong>Complimentary:</strong>{" "}
                           {plan.complimentary?.length > 0 ? plan.complimentary.join(", ") : "N/A"}
                         </p>

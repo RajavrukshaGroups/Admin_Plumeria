@@ -45,13 +45,13 @@ function Dashboard() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
-                <div className="shrink-0">
+                {/* <div className="shrink-0">
                   <img
                     alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+                    src=""
                     className="size-8"
                   />
-                </div>
+                </div> */}
                 <div className="hidden md:block">
                   <div className="ml-10 flex items-baseline space-x-4">
                     {navigation.map((item) => (
@@ -97,21 +97,27 @@ function Dashboard() {
                         <img alt="" src={user.imageUrl} className="size-8 rounded-full" />
                       </MenuButton>
                     </div>
-                    <MenuItems
-                      transition
-                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-                    >
-                      {userNavigation.map((item) => (
-                        <MenuItem key={item.name}>
+                    <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    {userNavigation.map((item) => (
+                      <MenuItem key={item.name}>
+                        {item.name === 'Sign out' ? (
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            {item.name}
+                          </button>
+                        ) : (
                           <a
                             href={item.href}
-                            className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             {item.name}
                           </a>
-                        </MenuItem>
-                      ))}
-                    </MenuItems>
+                        )}
+                      </MenuItem>
+                    ))}
+                  </MenuItems>
                   </Menu>
                 </div>
               </div>
