@@ -1,21 +1,17 @@
-
 import React, { useEffect, useState } from 'react';
-import axiosInstance from ".././api/interceptors";
-import PlanModal from '../components/planModalComponent'; // Adjust the import path as necessary
+import axiosInstance from '.././api/interceptors';
+import PlanModal from '../components/planModalComponent';
 import { Link } from 'react-router-dom';
-import EditRoomDetails from './EditRoomDetails';
 
 const RoomsTable = () => {
   const [rooms, setRooms] = useState([]);
-// Inside your RoomsTable component
-const [selectedPlan, setSelectedPlan] = useState(null);
-const [showModal, setShowModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         const response = await axiosInstance.get('/admin/roomsdata');
-        console.log(response, 'Fetched rooms data');
         setRooms(response || []);
       } catch (error) {
         console.error('Error fetching rooms data:', error);
@@ -23,95 +19,210 @@ const [showModal, setShowModal] = useState(false);
     };
     fetchRooms();
   }, []);
-  
-  // Handler to update room plan
-const handleSavePlan = (updatedPlan) => {
-  setRooms((prevRooms) =>
-    prevRooms.map((room) => ({
-      ...room,
-      plans: room.plans.map((plan) =>
-        plan.name === updatedPlan.name ? updatedPlan : plan
-      ),
-    }))
-  );
-};
+
+  const handleSavePlan = (updatedPlan) => {
+    setRooms((prevRooms) =>
+      prevRooms.map((room) => ({
+        ...room,
+        plans: room.plans.map((plan) =>
+          plan.name === updatedPlan.name ? updatedPlan : plan
+        ),
+      }))
+    );
+  };
 
   return (
-    <div className="p-6 sm:p-10 bg-white :bg-gray-900 rounded-xl shadow-lg overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 :text-white">Rooms Overview</h2>
-      <table className="min-w-full text-sm text-left text-gray-700 :text-gray-300 border-collapse">
-        <thead className="text-xs uppercase bg-gradient-to-r from-blue-200 to-blue-300 :from-gray-800 :to-gray-700 text-gray-800 :text-gray-300">
+    <div className="p-8 bg-white :bg-gray-900 rounded-2xl shadow-2xl overflow-x-auto">
+      <h2 className="text-3xl flex items-center m-auto justify-center underline font-extrabold mb-8 text-gray-800 :text-white tracking-wide">
+        Rooms Overview
+      </h2>
+
+      <table className="min-w-full text-sm text-left text-gray-700 :text-gray-300 border border-gray-300 :border-gray-600 rounded-lg">
+        <thead className="text-sm uppercase bg-gradient-to-r from-blue-400 to-blue-600 :from-gray-800 :to-gray-700 text-white">
           <tr>
-            {["Room Type", "Max Rooms", "Capacity", "Check In", "Check Out", "Plans"].map((header, index) => (
-              <th key={index} className="px-6 py-4 border-b border-gray-300 :border-gray-600 text-sm font-semibold tracking-wide">
+            {['Room Type', 'Max Rooms', 'Capacity', 'Check In', 'Check Out', 'Plans','Edit'].map((header, index) => (
+              <th
+                key={index}
+                className="px-6 py-4 border-r border-gray-300 :border-gray-600 text-sm font-bold tracking-wider"
+              >
                 {header}
               </th>
             ))}
           </tr>
         </thead>
+
         <tbody>
           {rooms.map((room, i) => (
             <tr
               key={i}
-              className="hover:bg-blue-50 :hover:bg-gray-800 transition-colors duration-200"
+              className="border-b border-gray-200 :border-gray-700 hover:bg-blue-50 :hover:bg-gray-800 transition duration-200"
             >
-              <td className="px-6 py-4  text-gray-900 :text-white text-2xl font-bold">{room.roomType}</td>
-              <td className="px-6 py-4 text-2xl font-semibold">{room.maxRoomsAvailable}</td>
-              <td className="px-6 py-4 text-2xl font-semibold">
+              <td className="px-6 py-4 font-bold text-lg text-gray-900 :text-white border-r border-gray-200 :border-gray-700">
+                {room.roomType}
+              </td>
+              <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
+                {room.maxRoomsAvailable}
+              </td>
+              <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
                 {room.capacity
                   ? `Adults: ${room.capacity.maxAdults}, Children: ${room.capacity.maxChildren}, Total: ${room.capacity.maxPersons}`
-                  : "N/A"}
+                  : 'N/A'}
               </td>
-              <td className="px-6 py-4 text-2xl font-semibold">{room.checkIn}</td>
-              <td className="px-6 py-4 text-2xl font-semibold">{room.checkOut}</td>
-              <td className="px-6 py-4">
-              <Link
+              <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
+                {room.checkIn}
+              </td>
+              <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
+                {room.checkOut}
+              </td>
+
+              <td className="px-6 py-4 space-y-2 text-base font-medium border-r border-gray-200 :border-gray-700">
+               
+                <div className="mt-2 space-y-1">
+                  {room.plans.map((plan, j) => (
+                    <button
+                      key={j}
+                      onClick={() => {
+                        setSelectedPlan(plan);
+                        setShowModal(true);
+                      }}
+                      className="block w-full text-left text-blue-700 :text-blue-400 hover:underline font-semibold text-base"
+                    >
+                      {plan.name}
+                    </button>
+                  ))}
+                </div>
+              </td>
+            <td className='px-6 py-4 space-y-2'>
+            <Link
                   to={`/edit-room/${room._id}`}
-                  className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+                  className="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-4 rounded shadow"
                 >
                   Edit
                 </Link>
 
-              {room.plans.map((plan, j) => (
-                      <div
-                        key={j}
-                        className="mb-3 p-3 rounded bg-gray-100 :bg-gray-700 text-sm text-gray-800   dark:text-gray-200 shadow  hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-                       
-                      >
-                        <p className="font-semibold text-blue-800 dark:text-blue-300 text-2xl">{plan.name}</p>
-                        <p className='text-gray-950 '>2 Guests (With GST): ₹{plan.price?.twoGuests?.withGst ?? "N/A"}</p>
-                        <p className='text-gray-950 '>2 Guests (Without GST): ₹{plan.price?.twoGuests?.withoutGst ?? "N/A"}</p>
-                        <p className='text-gray-950 '>Extra Adult (With GST): ₹{plan.price?.extraAdult?.withGst ?? "N/A"}</p>
-                        <p className='text-gray-950 '>Extra Adult (Without GST): ₹{plan.price?.extraAdult?.withoutGst ?? "N/A"}</p>
-                        <p className='text-gray-950 '>
-                          <strong>Complimentary:</strong>{" "}
-                          {plan.complimentary?.length > 0 ? plan.complimentary.join(", ") : "N/A"}
-                        </p>
-                        {/* <button className='bg-blue-600 text-white border-r-2 rounded-3xl cursor-pointer w-52 border ' onClick={() => {
-                          setSelectedPlan(plan);
-                          setShowModal(true);
-                        }}>Edit
-                        </button> */}
-                      </div>
-
-                    ))}
-                    <PlanModal
-                          isOpen={showModal}
-                          onClose={() => setShowModal(false)}
-                          planData={selectedPlan}
-                          onSave={handleSavePlan}
-                        />
-
-              </td>
+            </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <PlanModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        planData={selectedPlan}
+        onSave={handleSavePlan}
+      />
     </div>
   );
 };
 
 export default RoomsTable;
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import axiosInstance from ".././api/interceptors";
+// import PlanModal from '../components/planModalComponent'; // Adjust the import path as necessary
+// import { Link } from 'react-router-dom';
+// import EditRoomDetails from './EditRoomDetails';
+
+// const RoomsTable = () => {
+//   const [rooms, setRooms] = useState([]);
+// // Inside your RoomsTable component
+// const [selectedPlan, setSelectedPlan] = useState(null);
+// const [showModal, setShowModal] = useState(false);
+
+//   useEffect(() => {
+//     const fetchRooms = async () => {
+//       try {
+//         const response = await axiosInstance.get('/admin/roomsdata');
+//         console.log(response, 'Fetched rooms data');
+//         setRooms(response || []);
+//       } catch (error) {
+//         console.error('Error fetching rooms data:', error);
+//       }
+//     };
+//     fetchRooms();
+//   }, []);
+  
+//   // Handler to update room plan
+// const handleSavePlan = (updatedPlan) => {
+//   setRooms((prevRooms) =>
+//     prevRooms.map((room) => ({
+//       ...room,
+//       plans: room.plans.map((plan) =>
+//         plan.name === updatedPlan.name ? updatedPlan : plan
+//       ),
+//     }))
+//   );
+// };
+
+//   return (
+//     <div className="p-6 sm:p-10 bg-white :bg-gray-900 rounded-xl shadow-lg overflow-x-auto">
+//       <h2 className="text-2xl font-bold mb-6 text-gray-800 :text-white">Rooms Overview</h2>
+//       <table className="min-w-full text-sm text-left text-gray-700 :text-gray-300 border-collapse">
+//         <thead className="text-xs uppercase bg-gradient-to-r from-blue-200 to-blue-300 :from-gray-800 :to-gray-700 text-gray-800 :text-gray-300">
+//           <tr>
+//             {["Room Type", "Max Rooms", "Capacity", "Check In", "Check Out", "Plans"].map((header, index) => (
+//               <th key={index} className="px-6 py-4 border-b border-gray-300 :border-gray-600 text-sm font-semibold tracking-wide">
+//                 {header}
+//               </th>
+//             ))}
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {rooms.map((room, i) => (
+//             <tr
+//               key={i}
+//               className="hover:bg-blue-50 :hover:bg-gray-800 transition-colors duration-200"
+//             >
+//               <td className="px-6 py-4  text-gray-900 :text-white text-2xl font-bold">{room.roomType}</td>
+//               <td className="px-6 py-4 text-2xl font-semibold">{room.maxRoomsAvailable}</td>
+//               <td className="px-6 py-4 text-2xl font-semibold">
+//                 {room.capacity
+//                   ? `Adults: ${room.capacity.maxAdults}, Children: ${room.capacity.maxChildren}, Total: ${room.capacity.maxPersons}`
+//                   : "N/A"}
+//               </td>
+//               <td className="px-6 py-4 text-2xl font-semibold">{room.checkIn}</td>
+//               <td className="px-6 py-4 text-2xl font-semibold">{room.checkOut}</td>
+//               <td className="px-6 py-4">
+//               <Link
+//                   to={`/edit-room/${room._id}`}
+//                   className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+//                 >
+//                   Edit
+//                 </Link>
+
+//                 {room.plans.map((plan, j) => (
+//   <button
+//     key={j}
+//     onClick={() => {
+//       setSelectedPlan(plan);
+//       setShowModal(true);
+//     }}
+//     className="block w-full text-left text-blue-700 :text-blue-300 hover:underline text-xl font-semibold mb-1"
+//   >
+//     {plan.name}
+//   </button>
+// ))}
+
+// <PlanModal
+//   isOpen={showModal}
+//   onClose={() => setShowModal(false)}
+//   planData={selectedPlan}
+//   onSave={handleSavePlan}
+// />
+
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default RoomsTable;
 
 
 

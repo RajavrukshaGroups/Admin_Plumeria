@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 
 function AddRoomdetails() {
@@ -201,7 +202,7 @@ const handleSubmit = async (e) => {
         </h1>
         <form onSubmit={handleSubmit}>
           {/* Room Type */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Room Type
             </label>
@@ -214,7 +215,27 @@ const handleSubmit = async (e) => {
               <option value="Deluxe Rooms">Deluxe Rooms</option>
               <option value="Villa Rooms">Villa Rooms</option>
             </select>
-          </div>
+          </div> */}
+
+<div className="mb-6 w-full lg:w-1/2 mx-auto">
+  <label className="block text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
+    Room Type
+  </label>
+
+  <div className="relative">
+    <select
+      className="appearance-none w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+      value={roomType}
+      onChange={(e) => setRoomType(e.target.value)}
+    >
+      <option value="">Select Room Type</option>
+      <option value="Deluxe Rooms">Deluxe Rooms</option>
+      <option value="Villa Rooms">Villa Rooms</option>
+    </select>
+
+    <ChevronDownIcon className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+  </div>
+</div>
 
           {roomType && (
             <>
