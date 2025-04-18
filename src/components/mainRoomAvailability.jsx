@@ -29,6 +29,17 @@ const MainRoomAvailability = () => {
             Click here to create the booking details.
           </p>
         </div>
+        <div
+          onClick={() => navigate("/view-booking-details")}
+          className="cursor-pointer border rounded-lg p-6 shadow-md hover:shadow-xl transition duration-300 bg-white max-w-md w-full"
+        >
+          <h3 className="text-xl font-bold text-gray-800 mb-2">
+            View Booking Details
+          </h3>
+          <p className="text-gray-600">
+            Click here to view the booking details.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 
 const ListRoomAvailability = () => {
   const navigate = useNavigate();
@@ -20,6 +20,9 @@ const ListRoomAvailability = () => {
   const [filterError, setFilterError] = useState("");
 
   const [roomTypes, setRoomTypes] = useState([]);
+  const [uniqueDates, setUniqueDates] = useState([]);
+
+  console.log("unique dates", uniqueDates);
 
   useEffect(() => {
     setLoading(true);
@@ -45,6 +48,13 @@ const ListRoomAvailability = () => {
       .catch((err) => console.error("Failed to fetch room types:", err));
   }, []);
 
+  useEffect(() => {
+    axiosInstance
+      .get("/admin/bookings/unique-checkin-dates")
+      .then((data) => setUniqueDates(data.data))
+      .catch((err) => console.error("failed to fetch the dates", err));
+  }, []);
+
   const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const handlePageChange = (newPage) => {
@@ -61,6 +71,14 @@ const ListRoomAvailability = () => {
   const handleDelete = (id) => {
     setDeleteId(id); // Set the room ID to be deleted
     setShowModal(true); // Show the confirmation modal
+  };
+
+  const handleView = (item) => {
+    console.log("item-date", item);
+    // const formattedDate = new Date(item.date)
+    //   .toLocaleDateString("en-GB")
+    //   .replaceAll("/", "-");
+    navigate(`/admin/bookings/by-checkin-date?checkInDate=${item.checkInDate}`);
   };
 
   const confirmDelete = () => {
@@ -177,13 +195,13 @@ const ListRoomAvailability = () => {
                   <td className="border px-4 py-2 space-x-2">
                     <button
                       onClick={() => handleEdit(item._id)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      className="bg-yellow-400 text-black font-medium px-4 py-1.5 rounded-full shadow hover:bg-yellow-500 transition-all duration-200"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(item._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      className="bg-red-500 text-white font-medium px-4 py-1.5 rounded-full shadow hover:bg-red-600 transition-all duration-200"
                     >
                       Delete
                     </button>
@@ -315,6 +333,40 @@ const ListRoomAvailability = () => {
           )}
         </>
       )}
+
+      <div className="flex justify-center mt-10">
+        {loading ? (
+          <p className="text-center">Loading...</p>
+        ) : uniqueDates.length === 0 ? (
+          <p className="text-center">No data available.</p>
+        ) : (
+          <>
+            <table>
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="border px-4 py-2">Date</th>
+                  <th className="border px-4 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {uniqueDates.map((item) => (
+                  <tr key={item.checkInDate} className="text-center">
+                    <td className="border px-4 py-2">{item.checkInDate}</td>
+                    <td className="border px-4 py-2 space-x-2">
+                      <button
+                        onClick={() => handleView(item)}
+                        className="bg-indigo-500 text-white font-medium px-4 py-1.5 rounded-full shadow hover:bg-indigo-600 transition-all duration-200"
+                      >
+                        View Booking Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
     </div>
   );
 };
