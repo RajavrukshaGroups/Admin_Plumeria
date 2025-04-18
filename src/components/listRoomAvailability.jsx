@@ -22,6 +22,14 @@ const ListRoomAvailability = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const [uniqueDates, setUniqueDates] = useState([]);
 
+  const [uniqueDatesPage, setUniqueDatesPage] = useState(1);
+  const uniqueDatesPerPage = 5;
+  const [uniqueDatesTotal, setUniqueDatesTotal] = useState(0);
+
+  const [showUniqueDatesFilter, setShowUniqueDatesFilterModal] =
+    useState(false);
+  const [filterUniqueDate, setFilterUniqueDate] = useState("");
+
   console.log("unique dates", uniqueDates);
 
   useEffect(() => {
@@ -50,12 +58,21 @@ const ListRoomAvailability = () => {
 
   useEffect(() => {
     axiosInstance
-      .get("/admin/bookings/unique-checkin-dates")
-      .then((data) => setUniqueDates(data.data))
-      .catch((err) => console.error("failed to fetch the dates", err));
-  }, []);
+      .get(
+        `/admin/bookings/unique-checkin-dates?page=${uniqueDatesPage}&limit=${uniqueDatesPerPage}`
+      )
+      .then((res) => {
+        console.log("dates-res", res);
+        setUniqueDates(res.data);
+        setUniqueDatesTotal(res.total);
+      })
+      .catch((err) => console.error("Failed to fetch unique dates", err));
+  }, [uniqueDatesPage]);
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
+  const uniqueDatesTotalPages = Math.ceil(
+    uniqueDatesTotal / uniqueDatesPerPage
+  );
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -75,9 +92,6 @@ const ListRoomAvailability = () => {
 
   const handleView = (item) => {
     console.log("item-date", item);
-    // const formattedDate = new Date(item.date)
-    //   .toLocaleDateString("en-GB")
-    //   .replaceAll("/", "-");
     navigate(`/admin/bookings/by-checkin-date?checkInDate=${item.checkInDate}`);
   };
 
@@ -331,16 +345,65 @@ const ListRoomAvailability = () => {
               </div>
             </div>
           )}
+
+          {showUniqueDatesFilter && (
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 className="text-xl font-semibold mb-4 text-center">
+                  Filter Room Data
+                </h2>
+                <div className="space-y-4">
+                  <div className="block mb-1 text-sm">
+                    <label>Select Date:</label>
+                    <input
+                      type="date"
+                      className="w-full border px-3 py-2 rounded"
+                      value={filterUniqueDate}
+                      onChange={(e) => setFilterUniqueDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-between">
+                  <button
+                    onClick={() => setShowUniqueDatesFilterModal(false)}
+                    className="px-4 py-2 border rounded hover:bg-gray-100"
+                  >
+                    Close
+                  </button>
+                  <button
+                    // onClick={}
+                    disabled={!filterUniqueDate}
+                    className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 ${
+                      !filterUniqueDate ? "cursor-not-allowed opacity-50" : ""
+                    }`}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
-      <div className="flex justify-center mt-10">
-        {loading ? (
-          <p className="text-center">Loading...</p>
-        ) : uniqueDates.length === 0 ? (
-          <p className="text-center">No data available.</p>
-        ) : (
-          <>
+      <div className="relative">
+        {/* Filter Button */}
+        <div className="absolute right-0 top-0">
+          <button
+            onClick={() => setShowUniqueDatesFilterModal(true)}
+            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+          >
+            Filter
+          </button>
+        </div>
+
+        {/* Table */}
+        <div className="flex justify-center mt-14">
+          {loading ? (
+            <p className="text-center">Loading...</p>
+          ) : uniqueDates.length === 0 ? (
+            <p className="text-center">No data available.</p>
+          ) : (
             <table>
               <thead>
                 <tr className="bg-gray-200">
@@ -364,8 +427,42 @@ const ListRoomAvailability = () => {
                 ))}
               </tbody>
             </table>
-          </>
-        )}
+          )}
+        </div>
+      </div>
+
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        <button
+          className="px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300"
+          onClick={() => setUniqueDatesPage((prev) => Math.max(prev - 1, 1))}
+          disabled={uniqueDatesPage === 1}
+        >
+          Prev
+        </button>
+        {Array.from({ length: uniqueDatesTotalPages }, (_, i) => (
+          <button
+            key={i}
+            className={`px-3 py-1 border rounded ${
+              uniqueDatesPage === i + 1
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100"
+            }`}
+            onClick={() => setUniqueDatesPage(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          className="px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300"
+          onClick={() =>
+            setUniqueDatesPage((prev) =>
+              Math.min(prev + 1, uniqueDatesTotalPages)
+            )
+          }
+          disabled={uniqueDatesPage === uniqueDatesTotalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
