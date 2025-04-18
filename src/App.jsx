@@ -10,6 +10,8 @@ import RoomAvailabilityMain from "./pages/updateRoomAvailability";
 import EditRoomAvailability from "./components/editRoomAvailability";
 import EditRoomAvailabilityForm from "./components/editRoomAvailability";
 import AdminCreateBooking from "./components/adminCreateBooking";
+import ViewBookingDetails from "./components/viewBookingDetails";
+import BookingListByDate from "./components/bookingDetailsByDate";
 function App() {
   return (
     <Router>
@@ -26,6 +28,14 @@ function App() {
           <Route
             path="/admin-create-booking"
             element={<AdminCreateBooking />}
+          />
+          <Route
+            path="/view-booking-details"
+            element={<ViewBookingDetails />}
+          />
+          <Route
+            path="/admin/bookings/by-checkin-date"
+            element={<BookingListByDate />}
           />
         </Routes>
       </div>
