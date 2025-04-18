@@ -5,6 +5,8 @@ import React from 'react';
 const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
   if (!isOpen || !planData) return null;
 
+  console.log(planData,'this is the plan data')
+  
   const {
     name,
     price,
@@ -13,7 +15,11 @@ const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
     checkIn,
     checkOut,
     capacity,
+    menuDetails
   } = planData;
+  
+  console.log(menuDetails,'this is menu details');
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-50 backdrop-blur-sm px-4 py-6">
@@ -102,7 +108,7 @@ const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
           >
             Close
           </button>
-          <button
+          {/* <button
             onClick={() => {
               onSave(planData);
               onClose();
@@ -110,7 +116,7 @@ const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
             className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition"
           >
             Save
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
@@ -118,127 +124,3 @@ const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
 };
 
 export default PlanModal;
-
-
-// const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
-//   if (!isOpen || !planData) return null;
-
-//   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-//       <div className="bg-white :bg-gray-800 p-6 rounded-lg w-full max-w-lg shadow-lg">
-//         <h2 className="text-2xl font-bold mb-4 text-blue-700 dark:text-blue-300">{planData.name}</h2>
-//         <p className='mb-2'>2 Guests (With GST): ₹{planData.price?.twoGuests?.withGst ?? "N/A"}</p>
-//         <p className='mb-2'>2 Guests (Without GST): ₹{planData.price?.twoGuests?.withoutGst ?? "N/A"}</p>
-//         <p className='mb-2'>Extra Adult (With GST): ₹{planData.price?.extraAdult?.withGst ?? "N/A"}</p>
-//         <p className='mb-2'>Extra Adult (Without GST): ₹{planData.price?.extraAdult?.withoutGst ?? "N/A"}</p>
-//         <p className='mb-2'>
-//           <strong>Complimentary:</strong> {planData.complimentary?.length > 0 ? planData.complimentary.join(", ") : "N/A"}
-//         </p>
-
-//         <div className="mt-6 flex justify-end space-x-4">
-//           <button
-//             onClick={onClose}
-//             className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-//           >
-//             Close
-//           </button>
-//           <button
-//             onClick={() => {
-//               // Handle save/edit logic
-//               onSave(planData);
-//               onClose();
-//             }}
-//             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-//           >
-//             Save
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PlanModal;
-
-
-
-// // components/PlanModal.jsx
-// import React, { useState,useEffect} from "react";
-
-// const PlanModal = ({ isOpen, onClose, planData, onSave }) => {
-//     console.log(planData,'this is plan data')
-//   const [editedPlan, setEditedPlan] = useState({ ...planData });
-
-//   const handleChange = (field, subField, value) => {
-
-//     setEditedPlan((prev) => ({
-//       ...prev,
-//       price: {
-//         ...prev.price,
-//         [field]: {
-//           ...prev.price?.[field],
-//           [subField]: value,
-//         },
-//       },
-//     }));
-//   };
-//   useEffect(() => {
-//     if (planData) {
-//       setEditedPlan(planData);
-//     }
-//   }, [planData]);
-  
-
-//   const handleSave = () => {
-//     onSave(editedPlan);
-//     onClose();
-//   };
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 z-50 bg-blend-saturation bg-opacity-40 flex items-center justify-center">
-//       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg">
-//         <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-//           Edit Plan: {planData.name}
-//         </h2>
-
-//         <div className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
-//           {[
-//             { label: "2 Guests (With GST)", field: "twoGuests", key: "withGst" },
-//             { label: "2 Guests (Without GST)", field: "twoGuests", key: "withoutGst" },
-//             { label: "Extra Adult (With GST)", field: "extraAdult", key: "withGst" },
-//             { label: "Extra Adult (Without GST)", field: "extraAdult", key: "withoutGst" },
-//           ].map(({ label, field, key }) => (
-//             <div key={label} className="flex justify-between items-center">
-//               <label>{label}</label>
-//               <input
-//                 type="number"
-//                 value={editedPlan.price?.[field]?.[key] || ""}
-//                 onChange={(e) => handleChange(field, key, e.target.value)}
-//                 className="ml-4 px-3 py-1 border rounded-md w-40 bg-white dark:bg-gray-700 dark:border-gray-600"
-//               />
-//             </div>
-//           ))}
-//         </div>
-
-//         <div className="mt-6 flex justify-end gap-3">
-//           <button
-//             onClick={onClose}
-//             className="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 text-sm"
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             onClick={handleSave}
-//             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-//           >
-//             Save Changes
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PlanModal;

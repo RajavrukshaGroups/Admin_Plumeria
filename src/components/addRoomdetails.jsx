@@ -48,7 +48,7 @@ function AddRoomdetails() {
   //   const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
   //   setFiles(updatedFiles);
   //   setPreviews((prev) => [...prev, ...newPreviews]);
-  // };
+  // };v
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -201,6 +201,8 @@ const handleSubmit = async (e) => {
           Add Room
         </h1>
         <form onSubmit={handleSubmit}>
+       
+
           {/* Room Type */}
           {/* <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -217,25 +219,26 @@ const handleSubmit = async (e) => {
             </select>
           </div> */}
 
-<div className="mb-6 w-full lg:w-1/2 mx-auto">
-  <label className="block text-base font-semibold text-gray-800 dark:text-gray-100 mb-2">
-    Room Type
-  </label>
 
-  <div className="relative">
-    <select
-      className="appearance-none w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-      value={roomType}
-      onChange={(e) => setRoomType(e.target.value)}
-    >
-      <option value="">Select Room Type</option>
-      <option value="Deluxe Rooms">Deluxe Rooms</option>
-      <option value="Villa Rooms">Villa Rooms</option>
-    </select>
-
-    <ChevronDownIcon className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
-  </div>
-</div>
+            <div className="mb-6 w-full lg:w-1/2 mx-auto">
+              <label className="block text-base font-semibold text-gray-800 dark:text-gray-900 mb-2">
+                Room Type
+              </label>
+                      
+              <div className="relative">
+                <select
+                  className="appearance-none w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                  value={roomType}
+                  onChange={(e) => setRoomType(e.target.value)}
+                >
+                  <option value="">Select Room Type</option>
+                  <option value="Deluxe Rooms">Deluxe Rooms</option>
+                  <option value="Villa Rooms">Villa Rooms</option>
+                </select>
+                      
+                <ChevronDownIcon className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
+              </div>
+            </div>
 
           {roomType && (
             <>
@@ -514,25 +517,6 @@ const handleSubmit = async (e) => {
 
 
                     
-                    {/* <input
-                        className="input"
-                        type="number"
-                        placeholder="Extra Adult With GST"
-                        value={plan.extraAdultWithGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithGST", e.target.value)
-                        }
-                      />
-                      <input
-                        className="input"
-                        type="number"
-                        placeholder="Extra Adult Without GST"
-                        value={plan.extraAdultWithoutGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
-                        }
-                      /> 
-                      */}
               </div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                    complimentary
@@ -546,20 +530,8 @@ const handleSubmit = async (e) => {
                         handlePlanChange(index, "complimentary", e.target.value)
                       }
                     />
-
-                {/* <textarea
-                  className="input mb-4 w-full p-2 border rounded"
-                  rows="3"
-                  placeholder="Menu Details (e.g., Veg Thali, Chicken Curry, etc...)"
-                  value={plan.menuDetails}
-                  onChange={(e) =>
-                    handlePlanChange(index, "menuDetails", e.target.value)
-                  }
-                /> */}
-
                 <div className="mt-4">
                   <label className="block font-medium mb-1">Menu Details</label>
-
                   {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
                     <div className="mb-2" key={type}>
                       <label className="block text-sm capitalize text-gray-700 mb-1">

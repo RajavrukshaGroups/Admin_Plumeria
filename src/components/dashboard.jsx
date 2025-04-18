@@ -14,10 +14,10 @@ function Dashboard() {
   }
   const navigation = [
     { name: 'Dashboard', href: '#', current: true },
-    { name: 'Team', href: '#', current: false },
-    { name: 'List Tables', href: '/roomsTable', current: false },
+    { name: 'Team', href: '#', current: true },
+    { name: 'List Tables', href: '/roomsTable', current: true },
     // { name: 'Calendar', href: '#', current: false },
-    { name: 'Add Rooms', href: '/addRoomdetails', current: false },
+    { name: 'Add Rooms', href: '/addRoomdetails', current: true },
   ]
   const userNavigation = [
     { name: 'Your Profile', href: '#' },
@@ -144,8 +144,7 @@ function Dashboard() {
                   className={classNames(
                     item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium',
-                  )}
-                >
+                  )}>
                   {item.name}
                 </DisclosureButton>
               ))}

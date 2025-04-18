@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
+import { editRoomDetails } from "../api/auth";
 
 function EditRoomDetails() {
   const { roomId } = useParams(); // assuming you're passing :roomId in your route
   const navigate = useNavigate();
-
   // State declarations same as AddRoomdetails
   const [roomType, setRoomType] = useState("");
   const [maxRoomsAvailable, setMaxRoomsAvailable] = useState("");
@@ -22,56 +22,42 @@ function EditRoomDetails() {
   const [plans, setPlans] = useState([]);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
-  const [menuDetails, setMenuDetails] = useState({
-    welcomeDrinks: [],
-    breakFast: [],
-    dinner: [],
-    snacks: [],
-  });
+  // const [menuDetails, setMenuDetails] = useState({
+  //   welcomeDrinks: [],
+  //   breakFast: [],
+  //   dinner: [],
+  //   snacks: [],
+  // });
 
-  useEffect(() => {
-    async function fetchRoomsData() {
-      try {
-        const response = await axiosInstance.get("/admin/roomsdata");
-        console.log(response, "Fetched rooms data");
-        const rooms = response;
-        console.log(rooms, "this is fetched data");
-        const room = rooms.find((r) => r._id === roomId); // match by ID
-        console.log(room, "room dtaaass");
-        if (room) {
-          setRoomType(room.roomType || "");
-          setMaxRoomsAvailable(room.maxRoomsAvailable || "");
-          setCheckIn(room.checkIn || "");
-          setCheckOut(room.checkOut || "");
-          setMaxPersons(room.capacity?.maxPersons || "");
-          setMaxAdults(room.capacity?.maxAdults || "");
-          setMaxChildren(room.capacity?.maxChildren || "");
-          setRoomInfo(room.roomInfo?.description || "");
-          setBedType(room.roomInfo?.bed || "");
-          setTerms(room.roomInfo?.terms || []);
-          setAmenities(room.roomInfo?.amenities || []);
-          setPlans(room.plans || []);
-          if (room.images) {
-            setPreviews(room.images); // URLs
-          }
-        } else {
-          console.error("Room not found");
-        }
-      } catch (error) {
-        console.error("Error fetching room data:", error);
+useEffect(() => {
+  async function fetchRoomsData() {
+    try {
+      const response = await axiosInstance.get("/admin/roomsdata");
+      const room = response?.find((r) => r._id === roomId); // match by ID
+      if (room) {
+        setRoomType(room.roomType || "");
+        setMaxRoomsAvailable(room.maxRoomsAvailable || "");
+        setCheckIn(room.checkIn || "");
+        setCheckOut(room.checkOut || "");
+        setMaxPersons(room.capacity?.maxPersons || "");
+        setMaxAdults(room.capacity?.maxAdults || "");
+        setMaxChildren(room.capacity?.maxChildren || "");
+        setRoomInfo(room.roomInfo?.description || "");
+        setBedType(room.roomInfo?.bed || "");
+        setTerms(room.roomInfo?.terms || []);
+        setAmenities(room.roomInfo?.amenities || []);
+        setPlans(room.plans || []);
+        if (room.images) setPreviews(room.images); // URLs
+      } else {
+        console.error("Room not found");
       }
+    } catch (error) {
+      console.error("Error fetching room data:", error);
     }
+  }
+  fetchRoomsData();
+}, [roomId]);
 
-    fetchRoomsData();
-  }, [roomId]);
-
-  // const handleFileChange = (e) => {
-  //   const selectedFiles = Array.from(e.target.files);
-  //   setFiles(selectedFiles);
-
-  //   const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
-  //   setPreviews(previewUrls);
-  // };
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -110,14 +96,6 @@ function EditRoomDetails() {
     setAmenities(updated);
   };
 
-  // const handlePlanChange = (index, field, value) => {
-  //   const updatedPlans = [...plans];
-  //   updatedPlans[index] = {
-  //     ...updatedPlans[index],
-  //     [field]: value,
-  //   };
-  //   setPlans(updatedPlans);
-  // };
   const handlePlanChange = (index, field, value) => {
     const updatedPlans = [...plans];
     updatedPlans[index] = {
@@ -215,17 +193,25 @@ const handleNestedPlanChange = (index, path, value) => {
     formData.append("roomData", JSON.stringify(updatedRoomData));
     files.forEach((file) => formData.append("images", file));
 
+    // try {
+    //   const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`,
+    //     formData,
+    //     {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     }
+    //   );
+    //   alert("Room updated successfully!");
+    //   navigate("/roomsTable"); // or any route to redirect
+    // } catch (err) {
+    //   console.error("Error updating room:", err.response || err.message);
+    //   alert("Failed to update room.");
+    // }
     try {
-      const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await editRoomDetails(roomId, formData);
       alert("Room updated successfully!");
-      navigate("/roomsTable"); // or any route to redirect
+      navigate("/roomsTable");
     } catch (err) {
       console.error("Error updating room:", err.response || err.message);
       alert("Failed to update room.");
@@ -334,27 +320,6 @@ const handleNestedPlanChange = (index, path, value) => {
                         ))}
                       </div>
                     </div>
-
-              {/* <div className="mb-6">
-                <input
-                  className="input"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <div className="flex flex-wrap gap-4 mt-4">
-                  {previews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      alt={`Preview ${index}`}
-                      className="w-24 h-24 object-cover rounded border"
-                    />
-                  ))}
-                </div>
-              </div> */}
-
               {/* Amenities */}
               <div className="mb-6">
                 <label className="block mb-2 text-sm font-medium text-gray-700">
@@ -368,6 +333,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Add an amenity"
                   />
+
                   <button
                     type="button"
                     onClick={handleAddAmenity}
@@ -376,6 +342,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     Add
                   </button>
                 </div>
+                
                 <div className="flex flex-wrap gap-2">
                   {amenities.map((amenity, i) => (
                     <span
@@ -441,6 +408,9 @@ const handleNestedPlanChange = (index, path, value) => {
                 <h3 className="text-lg font-bold mb-4">Plans</h3>
                 {plans.map((plan, index) => (
                   <div key={index} className="border p-4 mb-4 rounded">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Plan Name
+                    </label>
                     <div className="flex justify-between items-center mb-4">
                       <input
                         className="input"
@@ -460,6 +430,11 @@ const handleNestedPlanChange = (index, path, value) => {
                       </button>
                     </div>
                     <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Two Guests With GST
+                  </label>
                       <input
                         className="input"
                         type="number"
@@ -469,6 +444,12 @@ const handleNestedPlanChange = (index, path, value) => {
                           handleNestedPlanChange(index, ["price", "twoGuests", "withGst"], e.target.value)
                         }
                       />
+                </div>
+
+                   <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Two Guests Without GST
+                     </label>
                       <input
                         className="input"
                         type="number"
@@ -478,7 +459,16 @@ const handleNestedPlanChange = (index, path, value) => {
                           handleNestedPlanChange(index, ["price", "twoGuests", "withoutGst"], e.target.value)
                         }
                       />
-                      <input
+                    </div>
+
+                    <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Extra Adult With GST
+                  </label>
+                   <div>
+                 <div>
+               
+                 <input
                         className="input"
                         type="number"
                         placeholder="Extra Adult With GST"
@@ -487,16 +477,30 @@ const handleNestedPlanChange = (index, path, value) => {
                           handleNestedPlanChange(index, ["price", "extraAdult", "withGst"], e.target.value)
                         }
                       />
-                      <input
+                 </div>
+                   </div>
+                    </div>
+                    
+                    <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Extra Adult Without GST
+                  </label>
+                    <input
                         className="input"
                         type="number"
                         placeholder="Extra Adult Without GST"
                         value={plan.price?.extraAdult?.withoutGst || ""}
-        onChange={(e) =>
-          handleNestedPlanChange(index, ["price", "extraAdult", "withoutGst"], e.target.value)
-        }
+                       onChange={(e) =>
+                         handleNestedPlanChange(index, ["price", "extraAdult", "withoutGst"], e.target.value)
+                       }
                       />
                     </div>
+                    </div>
+
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Complimentary (comma separated)
+                    </label>
+
                     <input
                       className="input mb-4"
                       type="text"
@@ -507,55 +511,26 @@ const handleNestedPlanChange = (index, path, value) => {
                       }
                     />
 
-                    {/* <div className="mt-4">
-                      <label className="block font-medium mb-1">
-                        Menu Details
-                      </label>
-
-                      {["welcomeDrinks", "breakFast", "dinner", "snacks"].map(
-                        (type) => (
-                          <div className="mb-2" key={type}>
-                            <label className="block text-sm capitalize text-gray-700 mb-1">
-                              {type.replace(/([A-Z])/g, " $1")}
-                            </label>
-                            <input
-                              type="text"
-                              className="input w-full"
-                              placeholder={`Enter ${type} (comma separated)`}
-                              value={
-                                plans[index].menuDetails[type]?.join(", ") || ""
-                              }
-                              onChange={(e) =>
-                                handleMenuDetailChange(
-                                  index,
-                                  type,
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </div>
-                        )
-                      )}
-                    </div> */}
+                  
                        <div className="mt-4">
-      <label className="block font-medium mb-1">Menu Details</label>
-      {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
-        <div className="mb-2" key={type}>
-          <label className="block text-sm capitalize text-gray-700 mb-1">
-            {type.replace(/([A-Z])/g, " $1")}
-          </label>
-          <input
-            type="text"
-            className="input w-full"
-            placeholder={`Enter ${type} (comma separated)`}
-            value={plan.menuDetails?.[type]?.join(", ") || ""}
-            onChange={(e) =>
-              handleNestedPlanChange(index, ["menuDetails", type], e.target.value.split(",").map((item) => item.trim()))
-            }
-          />
-        </div>
-      ))}
-    </div>
+                            <label className="block font-medium mb-1">Menu Details</label>
+                            {["welcomeDrinks", "breakFast", "dinner", "snacks"].map((type) => (
+                              <div className="mb-2" key={type}>
+                                <label className="block text-sm capitalize text-gray-700 mb-1">
+                                  {type.replace(/([A-Z])/g, " $1")}
+                                </label>
+                                <input
+                                  type="text"
+                                  className="input w-full"
+                                  placeholder={`Enter ${type} (comma separated)`}
+                                  value={plan.menuDetails?.[type]?.join(", ") || ""}
+                                  onChange={(e) =>
+                                    handleNestedPlanChange(index, ["menuDetails", type], e.target.value.split(",").map((item) => item.trim()))
+                                  }
+                                />
+                              </div>
+                            ))}
+                          </div>
                   
                     <div className="flex gap-4 flex-wrap">
                       {["WiFi", "Breakfast", "Spa", "Taxes Included"].map(
