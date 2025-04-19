@@ -19,6 +19,7 @@ const AdminCreateBooking = () => {
       email: "",
       phone: "",
     },
+    domainName: "",
     checkInDate: "",
     checkOutDate: "",
     totalRooms: 0,
@@ -307,6 +308,7 @@ const AdminCreateBooking = () => {
 
       // Prepare the request body
       const requestBody = {
+        domainName: formData.domainName,
         checkInDate: formData.checkInDate,
         checkOutDate: formData.checkOutDate,
         selectedRooms: selectedRooms,
@@ -385,6 +387,15 @@ const AdminCreateBooking = () => {
                 onChange={handleInputChange}
                 error={validationErrors.customerName}
                 required
+              />
+              <TextInput
+                icon={<FaUser />}
+                label="Domain Name"
+                name="domainName"
+                value={formData.domainName}
+                onChange={handleInputChange}
+                // error={validationErrors.customerName}
+                // required
               />
             </div>
           </div>

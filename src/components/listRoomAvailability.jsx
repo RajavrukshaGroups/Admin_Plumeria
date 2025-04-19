@@ -387,17 +387,6 @@ const ListRoomAvailability = () => {
       )}
 
       <div className="relative">
-        {/* Filter Button */}
-        <div className="absolute right-0 top-0">
-          <button
-            onClick={() => setShowUniqueDatesFilterModal(true)}
-            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-          >
-            Filter
-          </button>
-        </div>
-
-        {/* Table */}
         <div className="flex justify-center mt-14">
           {loading ? (
             <p className="text-center">Loading...</p>
