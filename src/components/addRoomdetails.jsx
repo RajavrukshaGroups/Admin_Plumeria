@@ -2,7 +2,7 @@ import { useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-
+import { addRoomDetails } from "../api/auth";
 
 function AddRoomdetails() {
   const navigate = useNavigate();
@@ -36,35 +36,25 @@ function AddRoomdetails() {
   
 
   console.log(amenities,'amenities check')
-
-  // const handleFileChange = (e) => {
-  //   const selectedFiles = Array.from(e.target.files);
-  //   const totalFiles = files.length + selectedFiles.length;
-  //   if (totalFiles > 4) {
-  //     alert("You can only upload up to 4 images.");
-  //     return;
-  //   }
-  //   const updatedFiles = [...files, ...selectedFiles];
-  //   const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-  //   setFiles(updatedFiles);
-  //   setPreviews((prev) => [...prev, ...newPreviews]);
-  // };v
-
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    const totalFiles = files.length + selectedFiles.length;
   
+    const totalFiles = files.length + selectedFiles.length;
     if (totalFiles > 4) {
       alert("You can only upload up to 4 images.");
       return;
     }
   
-    setFiles(prev => [...prev, ...selectedFiles]);
+    const updatedFiles = [...files, ...selectedFiles];
+    console.log("Updated Files State:", updatedFiles); // Log the updated files state
   
-    const newPreviews = selectedFiles.map(file => URL.createObjectURL(file));
-    setPreviews(prev => [...prev, ...newPreviews]);
+    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
+    console.log("Generated Previews:", newPreviews); // Log the generated preview URLs
+  
+    setFiles(updatedFiles);
+    setPreviews((prev) => [...prev, ...newPreviews]);
   };
-  
+
   const removeImage = (index) => {
     const updatedFiles = [...files];
     const updatedPreviews = [...previews];
@@ -138,6 +128,26 @@ function AddRoomdetails() {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+    // Basic frontend validation
+    if (!roomType || !roomInfo || !maxRoomsAvailable || !checkIn || !checkOut) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+    
+  if (files.length === 0) {
+    alert("Please upload at least one image.");
+    return;
+  }
+  if (plans.length === 0) {
+    alert("Please add at least one plan.");
+    return;
+  }
+
+   // Optional: check numeric fields
+   if (isNaN(maxRoomsAvailable) || maxRoomsAvailable <= 0) {
+    alert("Max rooms must be a positive number.");
+    return;
+  }
   const roomData = {
     roomType,
     maxRoomsAvailable: parseInt(maxRoomsAvailable, 10),
@@ -179,11 +189,7 @@ const handleSubmit = async (e) => {
   });
 
   try {
-    const response = await axiosInstance.post("/admin/rooms", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response =await addRoomDetails(formData)
     console.log(response.data, "this is the data");
     alert("Room added successfully!");
     navigate("/roomsTable")
@@ -201,25 +207,6 @@ const handleSubmit = async (e) => {
           Add Room
         </h1>
         <form onSubmit={handleSubmit}>
-       
-
-          {/* Room Type */}
-          {/* <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Room Type
-            </label>
-            <select
-              className="w-full bg-gray-200 border border-gray-300 rounded py-3 px-4"
-              value={roomType}
-              onChange={(e) => setRoomType(e.target.value)}
-            >
-              <option value="">Select Room Type</option>
-              <option value="Deluxe Rooms">Deluxe Rooms</option>
-              <option value="Villa Rooms">Villa Rooms</option>
-            </select>
-          </div> */}
-
-
             <div className="mb-6 w-full lg:w-1/2 mx-auto">
               <label className="block text-base font-semibold text-gray-800 dark:text-gray-900 mb-2">
                 Room Type
@@ -411,51 +398,7 @@ const handleSubmit = async (e) => {
                         Remove
                       </button>
                     </div>
-                    {/* <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Two Guests With GST
-                    </label>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      
-                      <input
-                        className="input"
-                        type="number"
-                        placeholder="Two Guests With GST"
-                        value={plan.twoGuestsWithGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "twoGuestsWithGST", e.target.value)
-                        }
-                      />
-                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Two Guests Without GST
-                    </label>
-                      <input
-                        className="input"
-                        type="number"
-                        placeholder="Two Guests Without GST"
-                        value={plan.twoGuestsWithoutGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "twoGuestsWithoutGST", e.target.value)
-                        }
-                      />
-                      <input
-                        className="input"
-                        type="number"
-                        placeholder="Extra Adult With GST"
-                        value={plan.extraAdultWithGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithGST", e.target.value)
-                        }
-                      />
-                      <input
-                        className="input"
-                        type="number"
-                        placeholder="Extra Adult Without GST"
-                        value={plan.extraAdultWithoutGST}
-                        onChange={(e) =>
-                          handlePlanChange(index, "extraAdultWithoutGST", e.target.value)
-                        }
-                      />
-                    </div> */}
+                    
                     <div className="grid grid-cols-2 gap-4 mb-4 items-center">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

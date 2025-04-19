@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
-import { editRoomDetails } from "../api/auth";
+import { editRoomDetails,getRoomById } from "../api/auth";
 
 function EditRoomDetails() {
   const { roomId } = useParams(); // assuming you're passing :roomId in your route
@@ -22,18 +22,12 @@ function EditRoomDetails() {
   const [plans, setPlans] = useState([]);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
-  // const [menuDetails, setMenuDetails] = useState({
-  //   welcomeDrinks: [],
-  //   breakFast: [],
-  //   dinner: [],
-  //   snacks: [],
-  // });
-
+  
 useEffect(() => {
-  async function fetchRoomsData() {
+  async function fetchData() {
     try {
-      const response = await axiosInstance.get("/admin/roomsdata");
-      const room = response?.find((r) => r._id === roomId); // match by ID
+      const room = await getRoomById(roomId);
+      console.log(room, "room in useEffect");
       if (room) {
         setRoomType(room.roomType || "");
         setMaxRoomsAvailable(room.maxRoomsAvailable || "");
@@ -47,7 +41,7 @@ useEffect(() => {
         setTerms(room.roomInfo?.terms || []);
         setAmenities(room.roomInfo?.amenities || []);
         setPlans(room.plans || []);
-        if (room.images) setPreviews(room.images); // URLs
+        if (room.images) setPreviews(room.images);
       } else {
         console.error("Room not found");
       }
@@ -55,7 +49,11 @@ useEffect(() => {
       console.error("Error fetching room data:", error);
     }
   }
-  fetchRoomsData();
+
+  if (roomId) {
+    console.log(roomId, 'roomId in useEffect');
+    fetchData();
+  }
 }, [roomId]);
 
 
@@ -149,8 +147,26 @@ const handleNestedPlanChange = (index, path, value) => {
     ]);
   };
 
+  const validateFields = () => {
+    if (!roomType.trim()) return "Room type is required.";
+    if (!maxRoomsAvailable || isNaN(maxRoomsAvailable)) return "Max rooms available must be a valid number.";
+    if (!checkIn.trim() || !checkOut.trim()) return "Check-in and check-out times are required.";
+    if (!maxPersons || isNaN(maxPersons)) return "Max persons must be a valid number.";
+    if (!maxAdults || isNaN(maxAdults)) return "Max adults must be a valid number.";
+    if (!maxChildren || isNaN(maxChildren)) return "Max children must be a valid number.";
+    if (!roomInfo.trim()) return "Room description is required.";
+    if (!bedType.trim()) return "Bed type is required.";
+    if (!Array.isArray(plans) || plans.length === 0) return "At least one plan is required.";
+    return null;
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const error = validateFields();
+    if (error) {
+      alert(error);
+      return;
+    }
 
     const updatedRoomData = {
       roomType,
@@ -193,21 +209,6 @@ const handleNestedPlanChange = (index, path, value) => {
     formData.append("roomData", JSON.stringify(updatedRoomData));
     files.forEach((file) => formData.append("images", file));
 
-    // try {
-    //   const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
-    //   alert("Room updated successfully!");
-    //   navigate("/roomsTable"); // or any route to redirect
-    // } catch (err) {
-    //   console.error("Error updating room:", err.response || err.message);
-    //   alert("Failed to update room.");
-    // }
     try {
       const response = await editRoomDetails(roomId, formData);
       alert("Room updated successfully!");
