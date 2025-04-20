@@ -56,9 +56,9 @@ const RoomsTable = () => {
       </h2>
 
       <table className="min-w-full text-sm text-left text-gray-700 :text-gray-300 border border-gray-300 :border-gray-600 rounded-lg">
-        <thead className="text-sm uppercase bg-gradient-to-r from-blue-400 to-blue-600 :from-gray-800 :to-gray-700 text-white">
+        <thead className="text-sm uppercase bg-gradient-to-r from-blue-200 to-blue-400 :from-gray-800 :to-gray-700 text-white">
           <tr>
-            {['Room Type', 'Max Rooms', 'Capacity', 'Check In', 'Check Out', 'Plans','Edit'].map((header, index) => (
+            {['Room Type', 'Max Rooms', 'Capacity', 'Check In', 'Check Out', 'Plans','Edit','Delete'].map((header, index) => (
               <th
                 key={index}
                 className="px-6 py-4 border-r border-gray-300 :border-gray-600 text-sm font-bold tracking-wider"
@@ -103,7 +103,7 @@ const RoomsTable = () => {
                         setSelectedPlan(plan);
                         setShowModal(true);
                       }}
-                      className="block w-full text-left text-blue-700 :text-blue-400 hover:underline font-semibold text-base"
+                      className="block w-full text-left text-blue-900 :text-blue-400 hover:underline font-semibold text-base cursor-pointer"
                     >
                       {plan.name}
                     </button>
@@ -117,12 +117,17 @@ const RoomsTable = () => {
                 >
                   Edit
                 </Link>
-                <button
+              
+
+            </td>
+            <td className='px-6 py-4 space-y-2'>
+            <button
                     onClick={() => handleDeleteRoom(room._id)}
                     className="ml-2 inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded shadow"
                   >
                     Delete
                   </button>
+              
 
             </td>
             </tr>

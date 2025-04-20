@@ -6,6 +6,7 @@ import AddRoomdetails from './components/addRoomdetails';
 import RoomsTable from './components/roomsTable';
 import EditRoomDetails from './components/EditRoomDetails';
 import Sidebar from './components/sidebar';
+import AddRoomTypeForm from './components/addroomType';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true); // State to control sidebar visibility
@@ -40,6 +41,7 @@ function MainLayout({ sidebarOpen, setSidebarOpen }) {
           <Route path="/addRoomdetails" element={<AddRoomdetails />} />
           <Route path="/roomsTable" element={<RoomsTable />} />
           <Route path="/edit-room/:roomId" element={<EditRoomDetails />} />
+          <Route path="/addRoomType" element={<AddRoomTypeForm />} />
         </Routes>
       </div>
     </div>

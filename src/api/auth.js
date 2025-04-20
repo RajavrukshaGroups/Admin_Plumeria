@@ -15,7 +15,11 @@ export const Signin = async ( email, password ) => {
 
 export const editRoomDetails = async (roomId, formData ) => {
   try {
-    const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`, formData);
+    const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`, formData,{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response; 
   } catch (error) {
     throw error;

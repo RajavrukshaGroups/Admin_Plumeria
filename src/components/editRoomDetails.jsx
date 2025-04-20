@@ -22,6 +22,9 @@ function EditRoomDetails() {
   const [plans, setPlans] = useState([]);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+
+  console.log(plans,'plans in edit room details');
+  
   
 useEffect(() => {
   async function fetchData() {
@@ -40,7 +43,20 @@ useEffect(() => {
         setBedType(room.roomInfo?.bed || "");
         setTerms(room.roomInfo?.terms || []);
         setAmenities(room.roomInfo?.amenities || []);
-        setPlans(room.plans || []);
+        // setPlans(room.plans || []);
+        const transformedPlans = (room.plans || []).map((plan) => {
+          const serviceObj = plan.services || {};
+          const serviceArray = Object.entries(serviceObj)
+            .filter(([_, value]) => value)
+            .map(([key]) => key);
+          
+          return {
+            ...plan,
+            services: serviceArray,
+          };
+        });
+        setPlans(transformedPlans);
+        
         if (room.images) setPreviews(room.images);
       } else {
         console.error("Room not found");
@@ -55,6 +71,7 @@ useEffect(() => {
     fetchData();
   }
 }, [roomId]);
+
 
 
   const handleFileChange = (e) => {
@@ -218,13 +235,23 @@ const handleNestedPlanChange = (index, path, value) => {
       alert("Failed to update room.");
     }
   };
+const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-200 outline-none text-sm";
+
 
   return (
-    <div className="bg-gray-100 flex bg-local">
-      <div className="bg-gray-100 mx-auto max-w-6xl bg-white py-20 px-12 lg:px-24 shadow-xl mb-24">
-        <h1 className="text-3xl font-bold justify-center items-center m-auto flex underline">
+    // <div className="bg-gray-100 flex bg-local">
+    //   <div className="bg-gray-100 mx-auto max-w-6xl bg-white py-20 px-12 lg:px-24 shadow-xl mb-24">
+    <div className="bg-gradient-to-tr from-gray-100 via-white to-gray-100 min-h-screen py-12">
+    <div className="max-w-6xl mx-auto bg-white rounded-1xl shadow-2xl px-8 md:px-16 py-12">
+  
+      <div className="text-center mb-8">
+    <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 via-purple-700 to-yellow-400 drop-shadow-lg tracking-wide underline decoration-wavy decoration-2 underline-offset-8">
+      Edit Room
+    </h1>
+  </div>
+        {/* <h1 className="text-3xl font-bold justify-center items-center m-auto flex underline">
           Edit Room
-        </h1>
+        </h1> */}
         <form onSubmit={handleUpdate}>
           {/* Room Type */}
           <div className="mb-6">
@@ -244,26 +271,48 @@ const handleNestedPlanChange = (index, path, value) => {
 
             <>
               {/* Room Info and Max Rooms */}
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                 Room Info
               </label>
-              <div className="grid grid-cols-2 gap-4 mb-6">
                 <input
-                  className="input"
+                   className={inputClass}
                   type="text"
                   placeholder="Room Info"
                   value={roomInfo}
                   onChange={(e) => setRoomInfo(e.target.value)}
                 />
-
+                </div>
+                <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                Max Rooms
+              </label>
                 <input
-                  className="input"
+                   className={inputClass}
                   type="number"
                   placeholder="Max Rooms Available"
                   value={maxRoomsAvailable}
                   onChange={(e) => setMaxRoomsAvailable(e.target.value)}
                 />
+                </div>
+               
+
+           
               </div>
+              <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Bed Info
+            </label>
+            <input
+                  className={inputClass}
+                  type="text"
+                  placeholder="Bed Info"
+                  value={bedType}
+                  onChange={(e) => setBedType(e.target.value)}
+                />
+            </div>
               {/* Check-in and Check-out Time Inputs */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
@@ -271,7 +320,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     Check-in Time
                   </label>
                   <input
-                    className="input"
+                     className={inputClass}
                     type="time"
                     placeholder="Check-in Time"
                     value={checkIn}
@@ -284,7 +333,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     Check-out Time
                   </label>
                   <input
-                    className="input"
+                     className={inputClass}
                     type="time"
                     placeholder="Check-out Time"
                     value={checkOut}
@@ -295,13 +344,49 @@ const handleNestedPlanChange = (index, path, value) => {
 
               {/* File Upload */}
               <div className="mb-6">
-                      <input
-                        className="input"
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={handleFileChange}
-                      />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Images
+                  </label>
+                      <div className="flex items-center justify-center w-full">
+                      <label
+                        htmlFor="dropzone-file"
+                        className="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-300 transition-all"
+                      >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg
+                            className="w-8 h-8 mb-4 text-gray-500"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">Click to upload</span> or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            SVG, PNG, JPG or GIF (MAX. 800x400px)
+                          </p>
+                        </div>
+                        <input
+                          id="dropzone-file"
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                      
+                        {/* <input  type="file" multiple accept="image/*" onChange={handleFileChange} class="hidden" /> */}
                       <div className="flex flex-wrap gap-4 mt-4">
                         {previews.map((src, index) => (
                           <div key={index} className="relative w-24 h-24">
@@ -397,7 +482,7 @@ const handleNestedPlanChange = (index, path, value) => {
               </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <input
-                  className="input"
+                  className={`${inputClass} `}
                   type="text"
                   placeholder="Terms (comma separated)"
                   value={terms}
@@ -406,15 +491,17 @@ const handleNestedPlanChange = (index, path, value) => {
               </div>
               {/* Plans */}
               <div className="mb-6">
-                <h3 className="text-lg font-bold mb-4">Plans</h3>
+                <h3 className="text-lg font-bold mb-4 border-b">Plans</h3>
                 {plans.map((plan, index) => (
-                  <div key={index} className="border p-4 mb-4 rounded">
+                  // <div key={index} className="border p-4 mb-4 rounded">
+                  <div className="bg-gray-50 p-6 rounded-xl shadow-inner mb-6">
+
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Plan Name
                     </label>
                     <div className="flex justify-between items-center mb-4">
                       <input
-                        className="input"
+                         className={inputClass}
                         type="text"
                         placeholder="Plan Name (e.g., Lite, Plus, Max)"
                         value={plan.name}
@@ -437,7 +524,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     Two Guests With GST
                   </label>
                       <input
-                        className="input"
+                         className={inputClass}
                         type="number"
                         placeholder="Two Guests With GST"
                         value={plan.price?.twoGuests?.withGst || ""}
@@ -452,7 +539,7 @@ const handleNestedPlanChange = (index, path, value) => {
                       Two Guests Without GST
                      </label>
                       <input
-                        className="input"
+                         className={inputClass}
                         type="number"
                         placeholder="Two Guests Without GST"
                         value={plan.price?.twoGuests?.withoutGst || ""}
@@ -470,7 +557,7 @@ const handleNestedPlanChange = (index, path, value) => {
                  <div>
                
                  <input
-                        className="input"
+                         className={inputClass}
                         type="number"
                         placeholder="Extra Adult With GST"
                         value={plan.price?.extraAdult?.withGst || ""}
@@ -487,7 +574,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     Extra Adult Without GST
                   </label>
                     <input
-                        className="input"
+                         className={inputClass}
                         type="number"
                         placeholder="Extra Adult Without GST"
                         value={plan.price?.extraAdult?.withoutGst || ""}
@@ -503,7 +590,7 @@ const handleNestedPlanChange = (index, path, value) => {
                     </label>
 
                     <input
-                      className="input mb-4"
+                       className={inputClass}
                       type="text"
                       placeholder="Complimentary (comma separated)"
                       value={plan.complimentary}
@@ -522,7 +609,7 @@ const handleNestedPlanChange = (index, path, value) => {
                                 </label>
                                 <input
                                   type="text"
-                                  className="input w-full"
+                                  className={inputClass}
                                   placeholder={`Enter ${type} (comma separated)`}
                                   value={plan.menuDetails?.[type]?.join(", ") || ""}
                                   onChange={(e) =>
@@ -533,27 +620,31 @@ const handleNestedPlanChange = (index, path, value) => {
                             ))}
                           </div>
                   
+
                     <div className="flex gap-4 flex-wrap">
-                      {["WiFi", "Breakfast", "Spa", "Taxes Included"].map(
+                      {["WiFi", "breakfast", "spa", "taxesIncluded"].map(
                         (service) => (
                           <label
                             key={service}
                             className="flex items-center gap-2 text-sm"
                           >
-                           <input
-                      type="checkbox"
-                      className="form-checkbox"
-                      checked={Array.isArray(plan.services) && plan.services.includes(service)}
-                      onChange={(e) => {
-                        const currentServices = Array.isArray(plan.services) ? plan.services : [];
+                          
+<input
+  type="checkbox"
+  className="form-checkbox"
+  checked={Array.isArray(plan.services) && plan.services.includes(service)}
+  onChange={(e) => {
+    const currentServices = Array.isArray(plan.services) ? plan.services : [];
+    const updatedServices = e.target.checked
+      ? [...currentServices, service]
+      : currentServices.filter((s) => s !== service);
 
-                        const updatedServices = e.target.checked
-                          ? [...currentServices, service]
-                          : currentServices.filter((s) => s !== service);
+    handlePlanChange(index, "services", updatedServices);
+  }}
+/>
 
-                        handlePlanChange(index, "services", updatedServices);
-                      }}
-                    />
+
+
                             {service}
                           </label>
                         )
