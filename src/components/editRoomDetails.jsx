@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
-import { editRoomDetails,getRoomById } from "../api/auth";
+import { editRoomDetails,getRoomById ,getAllRoomTypes} from "../api/auth";
 
 function EditRoomDetails() {
+  const [roomTypes, setRoomTypes] = useState([]);
+
   const { roomId } = useParams(); // assuming you're passing :roomId in your route
   const navigate = useNavigate();
   // State declarations same as AddRoomdetails
+  const [loading, setLoading] = useState(false);
   const [roomType, setRoomType] = useState("");
   const [maxRoomsAvailable, setMaxRoomsAvailable] = useState("");
   const [checkIn, setCheckIn] = useState("");
@@ -29,6 +32,10 @@ function EditRoomDetails() {
 useEffect(() => {
   async function fetchData() {
     try {
+      const roomTypeRes = await getAllRoomTypes();
+      setRoomTypes(roomTypeRes);
+      console.log(roomTypeRes, "roomTypeRes in useEffect");
+
       const room = await getRoomById(roomId);
       console.log(room, "room in useEffect");
       if (room) {
@@ -178,12 +185,15 @@ const handleNestedPlanChange = (index, path, value) => {
   };
 
   const handleUpdate = async (e) => {
+
     e.preventDefault();
     const error = validateFields();
     if (error) {
       alert(error);
       return;
     }
+    
+    setLoading(true);  // Show loader
 
     const updatedRoomData = {
       roomType,
@@ -233,6 +243,8 @@ const handleNestedPlanChange = (index, path, value) => {
     } catch (err) {
       console.error("Error updating room:", err.response || err.message);
       alert("Failed to update room.");
+    } finally {
+      setLoading(false); // Hide loader
     }
   };
 const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-200 outline-none text-sm";
@@ -243,7 +255,6 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
     //   <div className="bg-gray-100 mx-auto max-w-6xl bg-white py-20 px-12 lg:px-24 shadow-xl mb-24">
     <div className="bg-gradient-to-tr from-gray-100 via-white to-gray-100 min-h-screen py-12">
     <div className="max-w-6xl mx-auto bg-white rounded-1xl shadow-2xl px-8 md:px-16 py-12">
-  
       <div className="text-center mb-8">
     <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-800 via-purple-700 to-yellow-400 drop-shadow-lg tracking-wide underline decoration-wavy decoration-2 underline-offset-8">
       Edit Room
@@ -253,21 +264,50 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
           Edit Room
         </h1> */}
         <form onSubmit={handleUpdate}>
-          {/* Room Type */}
+      
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Room Type
-            </label>
-            <select
-              className="w-full bg-gray-200 border border-gray-300 rounded py-3 px-4"
-              value={roomType}
-              onChange={(e) => setRoomType(e.target.value)}
-            >
-              <option value="">Select Room Type</option>
-              <option value="Deluxe Rooms">Deluxe Rooms</option>
-              <option value="Villa Rooms">Villa Rooms</option>
-            </select>
-          </div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Room Type
+              </label>
+              <select
+                className="w-full bg-gray-200 border border-gray-300 rounded py-3 px-4"
+                value={roomType}
+                onChange={(e) => setRoomType(e.target.value)}
+              >
+                <option value="">Select Room Type</option>
+                {roomTypes.map((type, index) => (
+                  <option key={index} value={type.name}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+              {loading ? (
+    <div className="text-center py-4">
+      <svg
+        className="animate-spin h-6 w-6 text-blue-600 mx-auto mb-2"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v8z"
+        ></path>
+      </svg>
+      <p className="text-gray-700">Submitting, please wait...</p>
+    </div>
+  ) : (
+    <>
 
             <>
               {/* Room Info and Max Rooms */}
@@ -628,23 +668,19 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                             key={service}
                             className="flex items-center gap-2 text-sm"
                           >
-                          
-<input
-  type="checkbox"
-  className="form-checkbox"
-  checked={Array.isArray(plan.services) && plan.services.includes(service)}
-  onChange={(e) => {
-    const currentServices = Array.isArray(plan.services) ? plan.services : [];
-    const updatedServices = e.target.checked
-      ? [...currentServices, service]
-      : currentServices.filter((s) => s !== service);
+                        <input
+                          type="checkbox"
+                          className="form-checkbox"
+                          checked={Array.isArray(plan.services) && plan.services.includes(service)}
+                          onChange={(e) => {
+                            const currentServices = Array.isArray(plan.services) ? plan.services : [];
+                            const updatedServices = e.target.checked
+                              ? [...currentServices, service]
+                              : currentServices.filter((s) => s !== service);
 
-    handlePlanChange(index, "services", updatedServices);
-  }}
-/>
-
-
-
+                            handlePlanChange(index, "services", updatedServices);
+                          }}
+                        />
                             {service}
                           </label>
                         )
@@ -669,6 +705,9 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
           >
             Save Room
           </button>
+          </>
+
+)}
         </form>
       </div>
     </div>

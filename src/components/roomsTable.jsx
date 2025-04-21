@@ -9,6 +9,7 @@ const RoomsTable = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+console.log(rooms,'this is the rooms data')
 
   useEffect(() => {
     const getRooms = async () => {
@@ -83,7 +84,7 @@ const RoomsTable = () => {
               </td>
               <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
                 {room.capacity
-                  ? `Adults: ${room.capacity.maxAdults}, Children: ${room.capacity.maxChildren}, Total: ${room.capacity.maxPersons}`
+                  ? `Persons: ${room.capacity.maxPersons} , Adults: ${room.capacity.maxAdults}, Children: ${room.capacity.maxChildren} `
                   : 'N/A'}
               </td>
               <td className="px-6 py-4 text-base font-medium border-r border-gray-200 :border-gray-700">
@@ -127,9 +128,7 @@ const RoomsTable = () => {
                   >
                     Delete
                   </button>
-              
-
-            </td>
+               </td>
             </tr>
           ))}
         </tbody>

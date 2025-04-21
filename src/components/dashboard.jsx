@@ -18,6 +18,7 @@ function Dashboard() {
     { name: 'List Tables', href: '/roomsTable', current: true },
     // { name: 'Calendar', href: '#', current: false },
     { name: 'Add Rooms', href: '/addRoomdetails', current: true },
+    { name: 'Add Rooms', href: '/addRoomType', current: true }
   ]
   const userNavigation = [
     { name: 'Your Profile', href: '#' },
