@@ -35,10 +35,10 @@ console.log(rooms,'this is the rooms data')
     );
   };
 
+
   const handleDeleteRoom = async (roomId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this room?");
     if (!confirmDelete) return;
-  
     try {
       await deleteRoom(roomId);
       setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
@@ -52,6 +52,7 @@ console.log(rooms,'this is the rooms data')
 
   return (
     <div className="p-8 bg-white :bg-gray-900 rounded-2xl shadow-2xl overflow-x-auto">
+    
       <h2 className="text-3xl flex items-center m-auto justify-center underline font-extrabold mb-8 text-gray-800 :text-white tracking-wide">
         Rooms Overview
       </h2>

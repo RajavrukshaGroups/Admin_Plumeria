@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@coreui/icons": "^3.0.1",
+    "@coreui/react": "^5.5.0",
     "@headlessui/react": "^2.2.1",
     "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.6.1",
