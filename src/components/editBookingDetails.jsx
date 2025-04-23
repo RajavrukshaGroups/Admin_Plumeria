@@ -359,7 +359,7 @@ const EditBookingDetails = () => {
       };
 
       const response = await axiosInstance.put(
-        `/admin/updatebooking/${id}`,
+        `/admin/updatebookings/${id}`,
         requestBody
       );
 
