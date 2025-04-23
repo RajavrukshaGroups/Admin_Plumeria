@@ -172,7 +172,7 @@ const handleNestedPlanChange = (index, path, value) => {
   };
 
   const validateFields = () => {
-    if (!roomType.trim()) return "Room type is required.";
+    // if (!roomType.trim()) return "Room type is required.";
     if (!maxRoomsAvailable || isNaN(maxRoomsAvailable)) return "Max rooms available must be a valid number.";
     if (!checkIn.trim() || !checkOut.trim()) return "Check-in and check-out times are required.";
     if (!maxPersons || isNaN(maxPersons)) return "Max persons must be a valid number.";
@@ -196,7 +196,7 @@ const handleNestedPlanChange = (index, path, value) => {
     setLoading(true);  // Show loader
 
     const updatedRoomData = {
-      roomType,
+      // roomType,
       maxRoomsAvailable: parseInt(maxRoomsAvailable),
       checkIn,
       checkOut,
@@ -265,7 +265,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
         </h1> */}
         <form onSubmit={handleUpdate}>
       
-          <div className="mb-6">
+          {/* <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Room Type
               </label>
@@ -281,7 +281,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
               {loading ? (
     <div className="text-center py-4">
       <svg
