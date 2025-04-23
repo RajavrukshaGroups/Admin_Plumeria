@@ -260,28 +260,22 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
       Edit Room
     </h1>
   </div>
-        {/* <h1 className="text-3xl font-bold justify-center items-center m-auto flex underline">
-          Edit Room
-        </h1> */}
+ 
         <form onSubmit={handleUpdate}>
-      
-          {/* <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
                 Room Type
               </label>
-              <select
-                className="w-full bg-gray-200 border border-gray-300 rounded py-3 px-4"
-                value={roomType}
-                onChange={(e) => setRoomType(e.target.value)}
-              >
-                <option value="">Select Room Type</option>
-                {roomTypes.map((type, index) => (
-                  <option key={index} value={type.name}>
-                    {type.name}
-                  </option>
-                ))}
-              </select>
-            </div> */}
+                <input
+                   className={inputClass}
+                  type="text"
+                  placeholder="Room Type"
+                  value={roomType}
+                  onChange={(e) => setRoomInfo(e.target.value)}
+                  readOnly
+                />
+
+
+
               {loading ? (
     <div className="text-center py-4">
       <svg
