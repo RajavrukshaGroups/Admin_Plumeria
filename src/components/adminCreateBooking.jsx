@@ -63,7 +63,7 @@ const AdminCreateBooking = () => {
         setRoomTypes(roomTypesData);
 
         const roomPlans = roomTypesData.reduce((acc, room) => {
-          acc[room.roomType] = Object.keys(room.plans || {});
+          acc[room.roomType] = room.plans || {};
           return acc;
         }, {});
         setPlans(roomPlans);
@@ -585,7 +585,7 @@ const AdminCreateBooking = () => {
                       {guest.roomType &&
                         plans[guest.roomType]?.map((plan) => (
                           <option key={plan} value={plan}>
-                            {plan}
+                            {plan.name}
                           </option>
                         ))}
                     </select>
