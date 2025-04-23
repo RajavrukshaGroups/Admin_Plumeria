@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { FiEdit } from "react-icons/fi";
 import axiosInstance from "../api/interceptors";
+import { useNavigate } from "react-router-dom";
 
 const ViewBookingDetails = () => {
   const [bookingDetails, setBookingDetails] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchBookings = async (pageNum) => {
     setLoading(true);
@@ -46,8 +50,15 @@ const ViewBookingDetails = () => {
           {bookingDetails.map((booking) => (
             <div
               key={booking._id}
-              className="bg-white shadow-lg rounded-xl p-4 border border-gray-200"
+              className="relative bg-white shadow-lg rounded-xl p-4 border border-gray-200"
             >
+              <button
+                onClick={() => navigate(`/editBookingDetails/${booking._id}`)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-yellow-600"
+                title="Edit Booking"
+              >
+                <FiEdit size={20} />
+              </button>
               <div className="mb-2">
                 <h2 className="text-xl font-semibold">
                   {booking.customerName}
