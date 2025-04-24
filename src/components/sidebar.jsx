@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { CIcon } from '@coreui/icons-react';
+import { cilList, cilShieldAlt } from '@coreui/icons';
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
-  console.log("sidebaropen",sidebarOpen)
+  console.log("sidebaropen",sidebarOpen);
   return (
     <div className="relative flex items-start">
       {/* Toggle Button */}
@@ -14,7 +16,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               sidebarOpen ? "hover:bg-gray-700" : "hover:bg-gray-300"
             }`}
           >
-            <svg
+            {/*
+             <svg
               viewBox="0 0 20 20"
               className={`w-6 h-6 fill-current ${
                 sidebarOpen ? "text-gray-300" : "text-gray-600"
@@ -33,7 +36,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   clipRule="evenodd"
                 />
               )}
-            </svg>
+            </svg> 
+            */}
           </button>
         </div>
       </div>
@@ -118,9 +122,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   </svg>
                   <span className="mx-4 text-white">Rooms Overview</span>
                 </Link>
-             
               </div>
-
             </nav>
           </div>
         </div>
