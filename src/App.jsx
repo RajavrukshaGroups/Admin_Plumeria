@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Toaster } from "react-hot-toast";
+
 import {BrowserRouter as Router,Routes,Route,useLocation,
 } from "react-router-dom";
 import AdminLogin from "../../Admin_Plumeria/src/pages/adminlogin";
@@ -23,6 +25,8 @@ function App() {
   return (
     <Router>
       <MainLayout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Toaster position="top-right" reverseOrder={false} />
+  
     </Router>
   );
 }
@@ -42,7 +46,7 @@ function MainLayout({ sidebarOpen, setSidebarOpen }) {
          // Adjust margin based on sidebar state
       >
         <Routes>
-        <Route path="/adminlogin" element={<AdminLogin />} />
+           <Route path="/adminlogin" element={<AdminLogin />} />
            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
            <Route path="/addRoomdetails" element={<PrivateRoute><AddRoomdetails /></PrivateRoute>} />
            <Route path="/roomsTable" element={<PrivateRoute><RoomsTable /></PrivateRoute>} />

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../api/interceptors";
 import { useParams, useNavigate } from "react-router-dom";
 import { editRoomDetails,getRoomById ,getAllRoomTypes} from "../api/auth";
+import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
 
 function EditRoomDetails() {
   const [roomTypes, setRoomTypes] = useState([]);
@@ -85,7 +86,7 @@ useEffect(() => {
     const selectedFiles = Array.from(e.target.files);
     const totalFiles = files.length + selectedFiles.length;
     if (totalFiles > 4) {
-      alert("You can only upload up to 4 images.");
+      showErrorToast("You can only upload up to 4 images.");
       return;
     }
     setFiles(prev => [...prev, ...selectedFiles]);
@@ -189,7 +190,7 @@ const handleNestedPlanChange = (index, path, value) => {
     e.preventDefault();
     const error = validateFields();
     if (error) {
-      alert(error);
+      showErrorToast(error);
       return;
     }
     
@@ -238,11 +239,11 @@ const handleNestedPlanChange = (index, path, value) => {
 
     try {
       const response = await editRoomDetails(roomId, formData);
-      alert("Room updated successfully!");
+      showSuccessToast("Room updated successfully!");
       navigate("/roomsTable");
     } catch (err) {
       console.error("Error updating room:", err.response || err.message);
-      alert("Failed to update room.");
+      showErrorToast("Failed to update room.");
     } finally {
       setLoading(false); // Hide loader
     }
