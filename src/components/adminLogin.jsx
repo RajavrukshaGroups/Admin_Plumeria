@@ -16,70 +16,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated]);
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setLoading(true);
-
-  //   // Simulate API call
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //     // Perform actual login logic here
-  //   }, 5000);
-  //   if (!email || !password) return showErrorToast("Please fill in the email and password");
-  //   try {
-  //     const data = await Signin(email, password);
-  //     if (data.success) {
-  //       showSuccessToast("Login Successful");
-      
-  //       // Save token and user to Redux
-  //       dispatch(loginSuccess({ token: data.token, user: data.user }));
-  //       navigate("/");
-  //     }
-  //      else {
-  //       showErrorToast(data.message);
-  //     }
-  //   } catch (error) {
-  //     showErrorToast("Network error. Please try again later.");
-  //   }
-  // };
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   if (!email || !password) {
-  //     showErrorToast("Please fill in the email and password");
-  //     return;
-  //   }
   
-  //   setLoading(true);
-  
-  //   try {
-  //     const data = await Signin(email, password);
-  
-  //     if (data.success) {
-        
-  //       // Save token and user to Redux
-  //       dispatch(loginSuccess({ token: data.token, user: data.user }));
-        
-  //       // Wait for 5 seconds before navigating
-  //       setTimeout(() => {
-  //         navigate("/");
-
-  //         showSuccessToast("Login Successful");
-  //       }, 5000);
-  //     } else {
-  //       showErrorToast(data.message);
-  //     }
-  //   } catch (error) {
-  //     showErrorToast("Network error. Please try again later.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!email || !password) {
@@ -111,8 +48,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-  
-  
 
   return (
     <div className="bg-sky-100 flex justify-center items-center h-screen">
