@@ -2,10 +2,10 @@ import { useState,useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { addRoomDetails,getAllRoomTypes } from "../api/auth";
+import axiosInstance from "../api/interceptors";
 
 function AddRoomdetails() {
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
   const [roomType, setRoomType] = useState("");
   const [roomTypes, setRoomTypes] = useState([]);
@@ -25,10 +25,11 @@ function AddRoomdetails() {
   const [amenities, setAmenities] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [plans, setPlans] = useState([]);
-  
   // File Upload
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [roomDatas, setRoomDatas] = useState([]);
+
   const [menuDetails, setMenuDetails] = useState({
     welcomeDrinks: [],
     breakFast: [],
@@ -40,17 +41,20 @@ function AddRoomdetails() {
     async function fetchRoomTypes() {
       try {
         const data = await getAllRoomTypes();
-        console.log(data,'this is the fetched datas')
+        const response = await axiosInstance.get("/rooms");
+        console.log(response.data, 'this is the room data');
+        console.log(data, 'this is the fetched roomtypes');
+  
+        setRoomDatas(response.data); // Save rooms to state
         setRoomTypes(data);
       } catch (err) {
         console.error("Failed to load room types", err);
       }
     }
-
+  
     fetchRoomTypes();
   }, []);
 
-  
 
   console.log(amenities,'amenities check')
   const handleFileChange = (e) => {
@@ -167,7 +171,6 @@ const handleSubmit = async (e) => {
   }
 
   setLoading(true) ; // Show loader
-
   const roomData = {
     roomType,
     maxRoomsAvailable: parseInt(maxRoomsAvailable, 10),
@@ -220,10 +223,7 @@ const handleSubmit = async (e) => {
     setLoading(false); // Hide loader
   }
 };
-// const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-200 outline-none text-sm";
 const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-4 py-3 transition-all duration-300 shadow-sm";
-
-
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex items-center justify-center p-4">
@@ -239,55 +239,55 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
               <label className="block text-base font-semibold text-gray-700 :text-gray-900 mb-2">
                 Room Type
               </label>
+             
+                <div>
+                    <select
+                      className="appearance-none w-full bg-white dark:bg-gray-200 border border-gray-300 text-gray-800 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                      value={roomType}
+                      onChange={(e) => setRoomType(e.target.value)}
+                    >
+                      <option value="">Select Room Type</option>
+                      
+                              {roomTypes.map((type, index) => {
+                            const isDisabled = roomDatas.some(room => room.roomType === type.name);
 
+                            return (
+                              <option key={index} value={type.name} disabled={isDisabled}>
+                                {type.name} {isDisabled ? '(Already Added)' : ''}
+                              </option>
+                            );
+                          })}
+                            </select>
+                          </div>
 
-
-              <div className="relative">
-                  <select
-                    className="appearance-none w-full bg-white dark:bg-gray-200 border border-gray-300 text-gray-800 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-                    value={roomType}
-                    onChange={(e) => setRoomType(e.target.value)}
-                  >
-                    <option value="">Select Room Type</option>
-                    
-                    {/* Dynamically generated options */}
-                    {roomTypes.map((type, index) => (
-                      <option key={index} value={type.name}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <ChevronDownIcon className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
-                </div>
-            </div>
-            
-            {loading ? (
-    <div className="text-center py-4">
-      <svg
-        className="animate-spin h-6 w-6 text-blue-600 mx-auto mb-2"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        ></circle>
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v8z"
-        ></path>
-      </svg>
-      <p className="text-gray-700">Submitting, please wait...</p>
-    </div>
-  ) : (
-    <>
+                              </div>
+                              
+                              {loading ? (
+                      <div className="text-center py-4">
+                        <svg
+                          className="animate-spin h-6 w-6 text-blue-600 mx-auto mb-2"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8z"
+                          ></path>
+                        </svg>
+                        <p className="text-gray-700">Submitting, please wait...</p>
+                      </div>
+                    ) : (
+                      <>
 
           {roomType && (
             <>
@@ -569,9 +569,6 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                         }
                       /> 
                     </div>
-
-
-                    
               </div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                    complimentary
@@ -643,7 +640,7 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
           >
             Save Room
           </button>
-    </>
+             </>
 
             )}
         </form>

@@ -40,7 +40,6 @@ function App() {
 
 function MainLayout({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
-
   // Check if the current route is "/adminlogin"
   const isLoginPage = location.pathname === "/adminlogin";
 
