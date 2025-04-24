@@ -575,6 +575,7 @@ const AdminCreateBooking = () => {
                     <label className="block text-sm font-medium mb-1 text-gray-600">
                       Plan Name
                     </label>
+                    
                     <select
                       value={guest.planName}
                       onChange={(e) => handlePlanChange(index, e.target.value)}
@@ -584,7 +585,7 @@ const AdminCreateBooking = () => {
                       <option value="">Select a plan</option>
                       {guest.roomType &&
                         plans[guest.roomType]?.map((plan) => (
-                          <option key={plan} value={plan}>
+                          <option key={plan} value={plan.name}>
                             {plan.name}
                           </option>
                         ))}

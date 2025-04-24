@@ -241,53 +241,53 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
               </label>
              
                 <div>
-                    <select
-                      className="appearance-none w-full bg-white dark:bg-gray-200 border border-gray-300 text-gray-800 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-                      value={roomType}
-                      onChange={(e) => setRoomType(e.target.value)}
-                    >
-                      <option value="">Select Room Type</option>
-                      
-                              {roomTypes.map((type, index) => {
-                            const isDisabled = roomDatas.some(room => room.roomType === type.name);
+                  <select
+                    className="appearance-none w-full bg-white dark:bg-gray-200 border border-gray-300 text-gray-800 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                    value={roomType}
+                    onChange={(e) => setRoomType(e.target.value)}
+                  >
+                    <option value="">Select Room Type</option>
+                    
+                            {roomTypes.map((type, index) => {
+                          const isDisabled = roomDatas.some(room => room.roomType === type.name);
 
-                            return (
-                              <option key={index} value={type.name} disabled={isDisabled}>
-                                {type.name} {isDisabled ? '(Already Added)' : ''}
-                              </option>
-                            );
-                          })}
-                            </select>
-                          </div>
+                          return (
+                            <option key={index} value={type.name} disabled={isDisabled}>
+                              {type.name} {isDisabled ? '(Already Added)' : ''}
+                            </option>
+                          );
+                        })}
+                          </select>
+                        </div>
 
-                              </div>
-                              
-                              {loading ? (
-                      <div className="text-center py-4">
-                        <svg
-                          className="animate-spin h-6 w-6 text-blue-600 mx-auto mb-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v8z"
-                          ></path>
-                        </svg>
-                        <p className="text-gray-700">Submitting, please wait...</p>
-                      </div>
-                    ) : (
-                      <>
+                            </div>
+                            
+                            {loading ? (
+                    <div className="text-center py-4">
+                      <svg
+                        className="animate-spin h-6 w-6 text-blue-600 mx-auto mb-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        ></path>
+                      </svg>
+                      <p className="text-gray-700">Submitting, please wait...</p>
+                    </div>
+                  ) : (
+                    <>
 
           {roomType && (
             <>
