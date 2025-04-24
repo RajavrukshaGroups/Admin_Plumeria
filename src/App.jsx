@@ -26,8 +26,7 @@ function App() {
     <Router>
       <MainLayout sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <Toaster position="top-right" reverseOrder={false} />
-  
-    </Router>
+     </Router>
   );
 }
 function MainLayout({ sidebarOpen, setSidebarOpen }) {
