@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CIcon } from '@coreui/icons-react';
 import { cilList, cilShieldAlt } from '@coreui/icons';
+import { FaHome, FaBed, FaPlusSquare, FaListAlt } from "react-icons/fa";
+import { MdRoomPreferences } from "react-icons/md";
+
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   console.log("sidebaropen",sidebarOpen);
@@ -16,7 +19,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               sidebarOpen ? "hover:bg-gray-700" : "hover:bg-gray-300"
             }`}
           >
-            {/*
+            
              <svg
               viewBox="0 0 20 20"
               className={`w-6 h-6 fill-current ${
@@ -37,7 +40,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               )}
             </svg> 
-            */}
+           
           </button>
         </div>
       </div>
@@ -67,16 +70,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 {/* Dashboard Link */}
                 <Link
-                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                  to="/">
-                  <svg
-                    className="w-5 h-5 fill-current"
-                    viewBox="0 0 1200 1200"
+                    className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                    to="/"
                   >
-                    <path d="M600 195.373c-331.371 0-600 268.629-600 600c0 73.594 13.256 144.104 37.5 209.253h164.062C168.665 942.111 150 870.923 150 795.373c0-248.528 201.471-450 450-450s450 201.472 450 450c0 75.55-18.665 146.738-51.562 209.253H1162.5c24.244-65.148 37.5-135.659 37.5-209.253c0-331.371-268.629-600-600-600zm0 235.62c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm-224.927 73.462c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm449.854 0c-41.422 0-75 33.579-75 75c0 41.422 33.578 75 75 75c41.421 0 75-33.578 75-75c0-41.421-33.579-75-75-75zM600 651.672l-58.813 294.141v58.814h117.627v-58.814L600 651.672z" />
-                  </svg>
-                  <span className="mx-4 text-white">Dashboard</span>
-                </Link>
+                    <FaHome className="text-lg text-white" />
+                    <span className="mx-4 text-white">Dashboard</span>
+                  </Link>
               </div>
 
 
@@ -87,41 +86,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 {/* Dashboard Link */}
                 <Link
-                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                  to="/addRoomType"
-                >
-                  <svg
-                    className="w-5 h-5 fill-current"
-                    viewBox="0 0 1200 1200"
-                  >
-                    <path d="M600 195.373c-331.371 0-600 268.629-600 600c0 73.594 13.256 144.104 37.5 209.253h164.062C168.665 942.111 150 870.923 150 795.373c0-248.528 201.471-450 450-450s450 201.472 450 450c0 75.55-18.665 146.738-51.562 209.253H1162.5c24.244-65.148 37.5-135.659 37.5-209.253c0-331.371-268.629-600-600-600zm0 235.62c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm-224.927 73.462c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm449.854 0c-41.422 0-75 33.579-75 75c0 41.422 33.578 75 75 75c41.421 0 75-33.578 75-75c0-41.421-33.579-75-75-75zM600 651.672l-58.813 294.141v58.814h117.627v-58.814L600 651.672z" />
-                  </svg>
-                  <span className="mx-4 text-white">Add Rooms type</span>
-                </Link>
-                <Link
-                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                  to="/addRoomdetails"
-                >
-                  <svg
-                    className="w-5 h-5 fill-current"
-                    viewBox="0 0 1200 1200"
-                  >
-                    <path d="M600 195.373c-331.371 0-600 268.629-600 600c0 73.594 13.256 144.104 37.5 209.253h164.062C168.665 942.111 150 870.923 150 795.373c0-248.528 201.471-450 450-450s450 201.472 450 450c0 75.55-18.665 146.738-51.562 209.253H1162.5c24.244-65.148 37.5-135.659 37.5-209.253c0-331.371-268.629-600-600-600zm0 235.62c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm-224.927 73.462c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm449.854 0c-41.422 0-75 33.579-75 75c0 41.422 33.578 75 75 75c41.421 0 75-33.578 75-75c0-41.421-33.579-75-75-75zM600 651.672l-58.813 294.141v58.814h117.627v-58.814L600 651.672z" />
-                  </svg>
-                  <span className="mx-4 text-white">Addroom</span>
-                </Link>
-                <Link
-                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                  to="/roomsTable"
-                >
-                  <svg
-                    className="w-5 h-5 fill-current"
-                    viewBox="0 0 1200 1200"
-                  >
-                    <path d="M600 195.373c-331.371 0-600 268.629-600 600c0 73.594 13.256 144.104 37.5 209.253h164.062C168.665 942.111 150 870.923 150 795.373c0-248.528 201.471-450 450-450s450 201.472 450 450c0 75.55-18.665 146.738-51.562 209.253H1162.5c24.244-65.148 37.5-135.659 37.5-209.253c0-331.371-268.629-600-600-600zm0 235.62c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm-224.927 73.462c-41.421 0-75 33.579-75 75c0 41.422 33.579 75 75 75s75-33.578 75-75c0-41.421-33.579-75-75-75zm449.854 0c-41.422 0-75 33.579-75 75c0 41.422 33.578 75 75 75c41.421 0 75-33.578 75-75c0-41.421-33.579-75-75-75zM600 651.672l-58.813 294.141v58.814h117.627v-58.814L600 651.672z" />
-                  </svg>
-                  <span className="mx-4 text-white">Rooms Overview</span>
-                </Link>
+                      className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                      to="/addRoomType"
+                    >
+                      <MdRoomPreferences className="text-lg text-white" />
+                      <span className="mx-4 text-white">Add Rooms Type</span>
+                    </Link>
+
+                    <Link
+                          className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                          to="/addRoomdetails"
+                        >
+                          <FaPlusSquare className="text-lg text-white" />
+                          <span className="mx-4 text-white">Add Room</span>
+                        </Link>
+                        <Link
+                          className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                          to="/roomsTable"
+                        >
+                          <FaListAlt className="text-lg text-white" />
+                          <span className="mx-4 text-white">Rooms Table</span>
+                        </Link>
               </div>
             </nav>
           </div>
