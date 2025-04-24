@@ -52,10 +52,18 @@ const Login = () => {
         />
       </div>
       <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
-        <div className="logo">
-          <img src={'https://plumeriaresort.in/assets/RRPL_Group_logo_New--pkdVAFV.png'} />
-        </div>
-        <h1 className="text-4xl font-semibold mb-4 text-center">Admin Login</h1>
+      <div className="flex justify-center mb-6">
+      <img
+        src="http://localhost:5174/src/assets/plumeriaresortimages/Logo_RRPL_New.png"
+        alt="Company Logo"
+        className="h-20"
+      />
+    </div>
+
+        {/* <h1 className="text-4xl font-semibold mb-4 text-center">Admin Login</h1> */}
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      Admin Panel Login
+    </h1>
         <form onSubmit={handleSubmit} method="POST">
           <div className="mb-4 bg-sky-100">
             <label htmlFor="email" className="block text-gray-600">
