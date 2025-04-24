@@ -4,41 +4,48 @@ import { Signin } from "../api/auth";
 import { loginSuccess } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-// import toast from "react-hot-toast";
-import { toast } from "react-hot-toast";
+
 import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!email || !password) return showErrorToast("Please fill in the email and password");
+    if (!email || !password) {
+      showErrorToast("Please fill in the email and password");
+      return;
+    }
+  
+    setLoading(true);
+  
     try {
       const data = await Signin(email, password);
+  
       if (data.success) {
-        showSuccessToast("Login Successful");
-      
         // Save token and user to Redux
         dispatch(loginSuccess({ token: data.token, user: data.user }));
-        navigate("/");
-      }
-       else {
+  
+        // Wait for 5 seconds before navigating
+        setTimeout(() => {
+          showSuccessToast("Login Successful");
+          setLoading(false);
+          navigate("/");
+        }, 2000);
+      } else {
         showErrorToast(data.message);
+        setLoading(false);
       }
     } catch (error) {
       showErrorToast("Network error. Please try again later.");
+      setLoading(false);
     }
   };
 
@@ -93,12 +100,37 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button
+          {/* <button
             type="submit"
             className="bg-red-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
           >
             Login
-          </button>
+          </button> */}
+           <button
+        type="submit"
+        disabled={loading}
+        className={`${
+          loading ? 'bg-blue-600 cursor-not-allowed' : 'bg-red-500 hover:bg-blue-600'
+        } text-white font-semibold rounded-md py-2 px-4 w-full flex items-center justify-center`}
+      >
+        {loading ? (
+          <>
+            <svg
+              width="20"
+              height="20"
+              fill="currentColor"
+              className="mr-2 animate-spin"
+              viewBox="0 0 1792 1792"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M526 1394q0 53...z" />
+            </svg>
+            Loading...
+          </>
+        ) : (
+          'Login'
+        )}
+      </button>
         </form>
       </div>
     </div>
