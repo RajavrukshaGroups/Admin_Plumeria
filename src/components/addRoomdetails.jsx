@@ -289,10 +289,10 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                   ) : (
                     <>
 
-          {roomType && (
+         
             <>
               {/* Room Info and Max Rooms */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
+              {/* <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Room Info
@@ -343,9 +343,9 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     onChange={(e) => setCheckIn(e.target.value)}
                   />
                 </div>
-              </div>
+              </div> */}
               {/* Check-in and Check-out Time Inputs */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
+              {/* <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Check-out Time
@@ -358,7 +358,67 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     onChange={(e) => setCheckOut(e.target.value)}
                   />
                 </div>
-              </div>
+                
+              </div> */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Room Info</label>
+    <input
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+      type="text"
+      placeholder="Room Info"
+      value={roomInfo}
+      onChange={(e) => setRoomInfo(e.target.value)}
+      disabled={!roomType}
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Bed</label>
+    <input
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+      type="text"
+      placeholder="Bed Type"
+      value={bedType}
+      onChange={(e) => setBedType(e.target.value)}
+      disabled={!roomType}
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Max Rooms</label>
+    <input
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+      type="number"
+      placeholder="Max Rooms Available"
+      value={maxRoomsAvailable}
+      onChange={(e) => setMaxRoomsAvailable(e.target.value)}
+      disabled={!roomType}
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Time</label>
+    <input
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+      type="time"
+      value={checkIn}
+      onChange={(e) => setCheckIn(e.target.value)}
+      disabled={!roomType}
+    />
+  </div>
+</div>
+
+<div className="grid grid-cols-2 gap-4 mb-6">
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Time</label>
+    <input
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+      type="time"
+      value={checkOut}
+      onChange={(e) => setCheckOut(e.target.value)}
+      disabled={!roomType}
+    />
+  </div>
+</div>
+
               <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                                       Images
@@ -402,7 +462,9 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                 </label>
                 <div className="flex gap-2 mb-3">
                   <input
-                    className="flex-1 bg-gray-200 border border-gray-300 rounded py-3 px-4"
+                    // className="flex-1 bg-gray-200 border border-gray-300 rounded py-3 px-4"
+      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
@@ -632,7 +694,7 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                 </button>
               </div>
             </>
-          )}
+      
 
           <button
             type="submit"

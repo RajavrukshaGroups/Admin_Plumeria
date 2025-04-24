@@ -254,13 +254,7 @@ function Dashboard() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
                 <div className="flex items-center">
-                  <div className="shrink-0">
-                    <img
-                      alt="Your Company"
-                      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                      className="size-8"
-                    />
-                  </div>
+                  
                   <div className="hidden md:block">
                     <div className="ml-10 flex items-baseline space-x-4">
                       {navigation.map((item) => (
@@ -280,12 +274,12 @@ function Dashboard() {
                       ))}
                     </div>
                   </div>
-                  <button
+                  {/* <button
                     onClick={handleLogout}
                     className="bg-red-500 items-end justify-end flex m-auto hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4"
                   >
                     Logout
-                  </button>
+                  </button> */}
                 </div>
                 <div className="hidden md:block">
                   <div className="ml-4 flex items-center md:ml-6">
@@ -301,15 +295,21 @@ function Dashboard() {
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
                       <div>
-                        <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+                      <button
+                    onClick={handleLogout}
+                    className="bg-red-500 items-end justify-end flex m-auto hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4"
+                  >
+                    Logout
+                  </button>
+                        {/* <MenuButton className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                           <span className="absolute -inset-1.5" />
                           <span className="sr-only">Open user menu</span>
                           <img
                             alt=""
-                            src={user.imageUrl}
+                            src={''}
                             className="size-8 rounded-full"
                           />
-                        </MenuButton>
+                        </MenuButton> */}
                       </div>
                       <MenuItems
                         transition
