@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { addRoomDetails,getAllRoomTypes } from "../api/auth";
 import axiosInstance from "../api/interceptors";
+import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
+
 
 function AddRoomdetails() {
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ function AddRoomdetails() {
   
     const totalFiles = files.length + selectedFiles.length;
     if (totalFiles > 4) {
-      alert("You can only upload up to 4 images.");
+      showErrorToast("You can only upload up to 4 images.");
       return;
     }
   
@@ -151,22 +153,22 @@ const handleSubmit = async (e) => {
   e.preventDefault();
     // Basic frontend validation
     if (!roomType || !roomInfo || !maxRoomsAvailable || !checkIn || !checkOut) {
-      alert("Please fill out all required fields.");
+      showErrorToast("Please fill out all required fields.");
       return;
     }
     
   if (files.length === 0) {
-    alert("Please upload at least one image.");
+    showErrorToast("Please upload at least one image.");
     return;
   }
   if (plans.length === 0) {
-    alert("Please add at least one plan.");
+    showErrorToast("Please add at least one plan.");
     return;
   }
 
    // Optional: check numeric fields
    if (isNaN(maxRoomsAvailable) || maxRoomsAvailable <= 0) {
-    alert("Max rooms must be a positive number.");
+    showErrorToast("Max rooms must be a positive number.");
     return;
   }
 
@@ -214,11 +216,11 @@ const handleSubmit = async (e) => {
   try {
     const response =await addRoomDetails(formData)
     console.log(response.data, "this is the data");
-    alert("Room added successfully!");
+    showSuccessToast("Room added successfully!");
     navigate("/roomsTable")
   } catch (error) {
     console.error("Error saving room data:", error.response || error.message);
-    alert("Failed to save room data.");
+    showErrorToast("Failed to save room data.");
   } finally {
     setLoading(false); // Hide loader
   }
@@ -360,6 +362,7 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                 </div>
                 
               </div> */}
+              
               <div className="grid grid-cols-2 gap-4 mb-6">
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">Room Info</label>

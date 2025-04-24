@@ -44,7 +44,7 @@ console.log(rooms,'this is the rooms data')
       setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
     } catch (error) {
       console.error("Error deleting room:", error);
-      alert("Failed to delete room.");
+      showErrorToast("Failed to delete room.");
     }
   };
 

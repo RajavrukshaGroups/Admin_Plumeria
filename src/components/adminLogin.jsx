@@ -4,6 +4,10 @@ import { Signin } from "../api/auth";
 import { loginSuccess } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+// import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,19 +24,21 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!email || !password) return alert("Please fill in the email and password");
+    if (!email || !password) return showErrorToast("Please fill in the email and password");
     try {
       const data = await Signin(email, password);
       if (data.success) {
-        alert("Login Successful");
+        showSuccessToast("Login Successful");
+      
         // Save token and user to Redux
         dispatch(loginSuccess({ token: data.token, user: data.user }));
         navigate("/");
-      } else {
-        alert(data.message);
+      }
+       else {
+        showErrorToast(data.message);
       }
     } catch (error) {
-      alert("Network error. Please try again later.");
+      showErrorToast("Network error. Please try again later.");
     }
   };
 
