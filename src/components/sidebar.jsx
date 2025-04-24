@@ -18,6 +18,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             className={`transition-all duration-300 w-8 p-1 mx-3 my-2 rounded-full focus:outline-none ${
               sidebarOpen ? "hover:bg-gray-700" : "hover:bg-gray-300"
             }`}
+            
           >
             
              <svg
