@@ -45,7 +45,8 @@ const EditBookingDetails = () => {
 
         // Transform booking data to match form structure
         const transformedData = {
-          bookingId: bookingData._id,
+          bookingMongoId: bookingData._id,
+          bookingId: bookingData.bookingId,
           customerName: bookingData.customerName,
           contactInfo: {
             email: bookingData.contactInfo.email,
@@ -120,18 +121,18 @@ const EditBookingDetails = () => {
       errors.email = "Invalid email format";
     }
 
-    if (!formData.checkInDate) {
-      errors.checkInDate = "Check-in date is required";
-    }
+    // if (!formData.checkInDate) {
+    //   errors.checkInDate = "Check-in date is required";
+    // }
 
-    if (!formData.checkOutDate) {
-      errors.checkOutDate = "Check-out date is required";
-    } else if (
-      formData.checkInDate &&
-      new Date(formData.checkOutDate) < new Date(formData.checkInDate)
-    ) {
-      errors.checkOutDate = "Check-out date cannot be before check-in date";
-    }
+    // if (!formData.checkOutDate) {
+    //   errors.checkOutDate = "Check-out date is required";
+    // } else if (
+    //   formData.checkInDate &&
+    //   new Date(formData.checkOutDate) < new Date(formData.checkInDate)
+    // ) {
+    //   errors.checkOutDate = "Check-out date cannot be before check-in date";
+    // }
 
     if (formData.totalRooms <= 0) {
       errors.totalRooms = "At least one room is required";
@@ -339,6 +340,7 @@ const EditBookingDetails = () => {
         },
         customerName: formData.customerName,
         domainName: formData.domainName,
+        bookingId: formData.bookingId,
         checkInDate: formatDateForAPI(formData.checkInDate),
         checkOutDate: formatDateForAPI(formData.checkOutDate),
         totalRooms: formData.totalRooms,
@@ -436,7 +438,7 @@ const EditBookingDetails = () => {
             Back
           </button>
           <h2 className="text-3xl font-bold text-gray-800">
-            ✏️ Edit Booking #{formData.bookingId}
+            ✏️ Edit Booking #{formData.bookingMongoId}
           </h2>
         </div>
 
@@ -460,6 +462,21 @@ const EditBookingDetails = () => {
                 name="domainName"
                 value={formData.domainName}
                 onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TextInput
+                icon={<FaUser />}
+                label="BOOKING ID"
+                name="bookingId"
+                value={formData.bookingId}
+                onChange={handleInputChange}
+                error={validationErrors.customerName}
+                required
+                disabled
               />
             </div>
           </div>
@@ -508,6 +525,7 @@ const EditBookingDetails = () => {
                 onChange={handleInputChange}
                 error={validationErrors.checkInDate}
                 required
+                disabled
               />
               <TextInput
                 icon={<FaCalendarAlt />}
@@ -523,6 +541,7 @@ const EditBookingDetails = () => {
                     : ""
                 }
                 required
+                disabled
               />
             </div>
           </div>
@@ -786,6 +805,7 @@ const TextInput = ({
   required = false,
   min,
   step,
+  disabled,
   ...props
 }) => (
   <div>
@@ -798,7 +818,7 @@ const TextInput = ({
     <div
       className={`flex items-center border ${
         error ? "border-red-500" : "border-gray-300"
-      } rounded-lg p-2`}
+      } rounded-lg p-2 ${disabled ? "bg-gray-100" : ""}`}
     >
       {icon && <div className="mr-2 text-gray-500">{icon}</div>}
       <input
@@ -806,9 +826,12 @@ const TextInput = ({
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full focus:outline-none"
+        className={`w-full focus:outline-none ${
+          disabled ? "cursor-not-allowed" : ""
+        }`}
         min={min}
         step={step}
+        disabled={disabled}
         {...props}
       />
     </div>
