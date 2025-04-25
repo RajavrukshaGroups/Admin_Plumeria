@@ -8,6 +8,7 @@ import {
   FaSpinner,
   FaCheck,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/interceptors";
 import { toast } from "react-hot-toast";
 
@@ -54,6 +55,7 @@ const AdminCreateBooking = () => {
   const [plans, setPlans] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRoomTypes = async () => {
@@ -333,6 +335,7 @@ const AdminCreateBooking = () => {
       });
       // Reset form after successful submission
       setFormData(initialFormState);
+      navigate("/view-booking-details");
     } catch (error) {
       console.error("Error creating booking:", error);
       const errorMessage =
@@ -575,7 +578,7 @@ const AdminCreateBooking = () => {
                     <label className="block text-sm font-medium mb-1 text-gray-600">
                       Plan Name
                     </label>
-                    
+
                     <select
                       value={guest.planName}
                       onChange={(e) => handlePlanChange(index, e.target.value)}
