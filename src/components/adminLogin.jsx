@@ -23,7 +23,6 @@ const Login = () => {
       showErrorToast("Please fill in the email and password");
       return;
     }
-  
     setLoading(true);
   
     try {
