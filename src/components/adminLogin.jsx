@@ -99,12 +99,6 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {/* <button
-            type="submit"
-            className="bg-red-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
-          >
-            Login
-          </button> */}
            <button
         type="submit"
         disabled={loading}

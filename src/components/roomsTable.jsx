@@ -3,6 +3,10 @@ import axiosInstance from '.././api/interceptors';
 import PlanModal from '../components/planModalComponent';
 import { Link } from 'react-router-dom';
 import { fetchRoomsData ,deleteRoom} from '../api/auth';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+
+
 
 const RoomsTable = () => {
   const [rooms, setRooms] = useState([]);
@@ -36,17 +40,51 @@ console.log(rooms,'this is the rooms data')
   };
 
 
-  const handleDeleteRoom = async (roomId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this room?");
-    if (!confirmDelete) return;
-    try {
-      await deleteRoom(roomId);
-      setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
-    } catch (error) {
-      console.error("Error deleting room:", error);
-      showErrorToast("Failed to delete room.");
-    }
+
+  const handleDeleteRoom = (roomId) => {
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Are you sure you want to delete this room?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteRoom(roomId);
+              setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
+            } catch (error) {
+              console.error("Error deleting room:", error);
+              // Optional: toast or alert
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {} // Do nothing
+        }
+      ]
+    });
   };
+  
+  confirmAlert({
+    customUI: ({ onClose }) => {
+      return (
+        <div className='custom-ui'>
+          <h1>Are you sure?</h1>
+          <p>You want to delete this file?</p>
+          <button onClick={onClose}>No</button>
+          <button
+            onClick={() => {
+              this.handleClickDelete();
+              onClose();
+            }}
+          >
+            Yes, Delete it!
+          </button>
+        </div>
+      );
+    }
+  });
 
 
 
