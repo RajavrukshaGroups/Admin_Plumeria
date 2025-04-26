@@ -70,7 +70,7 @@ const Login = () => {
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
       Admin Panel Login
     </h1>
-        <form onSubmit={handleSubmit} method="POST">
+        <form onSubmit={handleSubmit} method="POST">  
           <div className="mb-4 bg-sky-100">
             <label htmlFor="email" className="block text-gray-600">
               Email
@@ -79,6 +79,7 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
+              placeholder="enter email id"
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
               autoComplete="off"
               value={email}
@@ -93,6 +94,7 @@ const Login = () => {
               type="password"
               id="password"
               name="password"
+              placeholder="enter password"
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
               autoComplete="off"
               value={password}
