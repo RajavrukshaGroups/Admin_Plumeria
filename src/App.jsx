@@ -21,6 +21,7 @@ import ViewBookingDetails from "./components/viewBookingDetails";
 import BookingListByDate from "./components/bookingDetailsByDate";
 import EditBookingDetails from "./components/editBookingDetails";
 function App() {
+
   const [sidebarOpen, setSidebarOpen] = useState(true); 
   return (
     <Router>

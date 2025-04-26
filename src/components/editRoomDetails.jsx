@@ -20,15 +20,17 @@ function EditRoomDetails() {
   const [maxChildren, setMaxChildren] = useState("");
   const [roomInfo, setRoomInfo] = useState("");
   const [bedType, setBedType] = useState("");
-  const [terms, setTerms] = useState("");
+  // const [terms, setTerms] = useState("");
   const [amenities, setAmenities] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [plans, setPlans] = useState([]);
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [terms, setTerms] = useState([]);
+  const [termsInput, setTermsInput] = useState("");
+
 
   console.log(plans,'plans in edit room details');
-  
   
 useEffect(() => {
   async function fetchData() {
@@ -57,7 +59,6 @@ useEffect(() => {
           const serviceArray = Object.entries(serviceObj)
             .filter(([_, value]) => value)
             .map(([key]) => key);
-          
           return {
             ...plan,
             services: serviceArray,
@@ -73,13 +74,11 @@ useEffect(() => {
       console.error("Error fetching room data:", error);
     }
   }
-
   if (roomId) {
     console.log(roomId, 'roomId in useEffect');
     fetchData();
   }
 }, [roomId]);
-
 
 
   const handleFileChange = (e) => {
@@ -118,6 +117,17 @@ useEffect(() => {
     updated.splice(index, 1);
     setAmenities(updated);
   };
+  const handleAddTerm = () => {
+    if (termsInput.trim()) {
+      setTerms([...terms, termsInput.trim()]);
+      setTermsInput("");
+    }
+  };
+  
+  const handleRemoveTerm = (index) => {
+    setTerms(terms.filter((_, i) => i !== index));
+  };
+  
 
   const handlePlanChange = (index, field, value) => {
     const updatedPlans = [...plans];
@@ -210,6 +220,7 @@ const handleNestedPlanChange = (index, path, value) => {
         description: roomInfo,
         bed: bedType,
       },
+      // terms,
       terms,
       amenities,
       plans: plans.map((plan) => ({
@@ -232,6 +243,7 @@ const handleNestedPlanChange = (index, path, value) => {
       }))
    
     };
+    console.log(updatedRoomData,'this update datas')
 
     const formData = new FormData();
     formData.append("roomData", JSON.stringify(updatedRoomData));
@@ -261,7 +273,6 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
       Edit Room
     </h1>
   </div>
- 
         <form onSubmit={handleUpdate}>
             <label className="block text-sm font-medium text-gray-700 mb-2">
                 Room Type
@@ -274,9 +285,6 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                   onChange={(e) => setRoomInfo(e.target.value)}
                   readOnly
                 />
-
-
-
               {loading ? (
     <div className="text-center py-4">
       <svg
@@ -303,13 +311,11 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
     </div>
   ) : (
     <>
-
             <>
               {/* Room Info and Max Rooms */}
-              
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Room Info
               </label>
                 <input
@@ -332,9 +338,6 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                   onChange={(e) => setMaxRoomsAvailable(e.target.value)}
                 />
                 </div>
-               
-
-           
               </div>
               <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -481,10 +484,10 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                   ))}
                 </div>
                 <section>
+
                       <label
                         className="uppercase tracking-wide text-black text-xs font-bold mb-2"
-                        htmlFor="capacity"
-                      >
+                        htmlFor="capacity">
                         Capacity
                       </label>
                       <div className="grid grid-cols-3 gap-4">
@@ -512,7 +515,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                       </div>
                     </section>
               </div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              {/* <label className="block mb-2 text-sm font-medium text-gray-700">
                 Terms
               </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -523,7 +526,44 @@ const inputClass = "w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-2
                   value={terms}
                   onChange={(e) => setTerms(e.target.value)}
                 />
-              </div>
+              </div> */}
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                  Terms
+                </label>
+                <div className="flex gap-2 mb-4">
+                  <input
+                    className={`${inputClass}`}
+                    type="text"
+                    placeholder="Enter a term"
+                    value={termsInput}
+                    onChange={(e) => setTermsInput(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTerm}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                  >
+                    Add
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {terms.map((term, i) => (
+                    <span
+                      key={i}
+                      className="bg-green-200 text-green-800 px-3 py-1 rounded-full text-sm"
+                    >
+                      {term}
+                      <button
+                        onClick={() => handleRemoveTerm(i)}
+                        className="ml-1 text-red-600 font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+
               {/* Plans */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-4 border-b">Plans</h3>
