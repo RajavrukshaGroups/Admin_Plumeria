@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CIcon } from '@coreui/icons-react';
-import { cilList, cilShieldAlt } from '@coreui/icons';
+import { CIcon } from "@coreui/icons-react";
+import { cilList, cilShieldAlt } from "@coreui/icons";
 import { FaHome, FaBed, FaPlusSquare, FaListAlt } from "react-icons/fa";
 import { MdRoomPreferences } from "react-icons/md";
 
-
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
-  console.log("sidebaropen",sidebarOpen);
+  console.log("sidebaropen", sidebarOpen);
   return (
     <div className="relative flex items-start">
       {/* Toggle Button */}
@@ -18,10 +17,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             className={`transition-all duration-300 w-8 p-1 mx-3 my-2 rounded-full focus:outline-none ${
               sidebarOpen ? "hover:bg-gray-700" : "hover:bg-gray-300"
             }`}
-            
           >
-            
-             <svg
+            <svg
               viewBox="0 0 20 20"
               className={`w-6 h-6 fill-current ${
                 sidebarOpen ? "text-gray-300" : "text-gray-600"
@@ -40,8 +37,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   clipRule="evenodd"
                 />
               )}
-            </svg> 
-           
+            </svg>
           </button>
         </div>
       </div>
@@ -52,7 +48,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           sidebarOpen ? "w-56" : "w-0"
         }`}
       >
-        
         <div className="flex flex-col items-stretch justify-between h-full">
           {/* Header */}
           <div className="flex flex-col flex-shrink-0 w-full">
@@ -71,14 +66,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 {/* Dashboard Link */}
                 <Link
-                    className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                    to="/"
-                  >
-                    <FaHome className="text-lg text-white" />
-                    <span className="mx-4 text-white">Dashboard</span>
-                  </Link>
+                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                  to="/"
+                >
+                  <FaHome className="text-lg text-white" />
+                  <span className="mx-4 text-white">Dashboard</span>
+                </Link>
               </div>
-
 
               <div
                 className={`flex-grow md:block md:overflow-y-auto overflow-x-hidden transition-opacity duration-300 ${
@@ -87,27 +81,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 {/* Dashboard Link */}
                 <Link
-                      className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                      to="/addRoomType"
-                    >
-                      <MdRoomPreferences className="text-lg text-white" />
-                      <span className="mx-4 text-white">Add Rooms Type</span>
-                    </Link>
+                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                  to="/addRoomType"
+                >
+                  <MdRoomPreferences className="text-lg text-white" />
+                  <span className="mx-4 text-white">Add Rooms Type</span>
+                </Link>
 
-                    <Link
-                          className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                          to="/addRoomdetails"
-                        >
-                          <FaPlusSquare className="text-lg text-white" />
-                          <span className="mx-4 text-white">Add Room</span>
-                        </Link>
-                        <Link
-                          className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
-                          to="/roomsTable"
-                        >
-                          <FaListAlt className="text-lg text-white" />
-                          <span className="mx-4 text-white">Rooms Table</span>
-                        </Link>
+                <Link
+                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                  to="/addRoomdetails"
+                >
+                  <FaPlusSquare className="text-lg text-white" />
+                  <span className="mx-4 text-white">Add Room</span>
+                </Link>
+                <Link
+                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                  to="/roomsTable"
+                >
+                  <FaListAlt className="text-lg text-white" />
+                  <span className="mx-4 text-white">Rooms Table</span>
+                </Link>
+                <Link
+                  className="flex justify-start items-center px-4 py-3 hover:bg-gray-800 hover:text-gray-400 focus:bg-gray-800 focus:outline-none focus:ring"
+                  to="/mailpilot"
+                >
+                  <FaListAlt className="text-lg text-white" />
+                  <span className="mx-4 text-white">Mail Pilot</span>
+                </Link>
               </div>
             </nav>
           </div>
