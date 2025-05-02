@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
 
-
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,35 +14,61 @@ const Login = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (!email || !password) {
+  //     showErrorToast("Please fill in the email and password");
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     const data = await Signin(email, password);
+  //     console.log(data,'this is the dataa')
+  //     if (data.success) {
+  //       // Save token and user to Redux
+  //       dispatch(loginSuccess({ token: data.token, user: data.user }));
+  //       // Wait for 5 seconds before navigating
+  //       setTimeout(() => {
+  //         showSuccessToast("Login Successful");
+  //         setLoading(false);
+  //         navigate("/");
+  //       }, 2000);
+  //     } else {
+  //       showErrorToast(data.message || "Login failed");
+  //       // showErrorToast(data.message);
+  //       setLoading(false);
+  //     }
+  //   } catch (error) {
+  //     // showErrorToast("Network error. Please try again later.");
+  //     showErrorToast("Something went wrong. Please try again.");
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault() ;
     if (!email || !password) {
       showErrorToast("Please fill in the email and password");
       return;
-    }
+       }
     setLoading(true);
-  
     try {
-      const data = await Signin(email, password);
-  
+      const data = await Signin(email, password); // Now `data` is { success, message }
+      console.log(data, "this is the data");
       if (data.success) {
-        // Save token and user to Redux
         dispatch(loginSuccess({ token: data.token, user: data.user }));
-  
-        // Wait for 5 seconds before navigating
         setTimeout(() => {
           showSuccessToast("Login Successful");
           setLoading(false);
           navigate("/");
         }, 2000);
       } else {
-        showErrorToast(data.message);
+        showErrorToast(data.message || "Login failed");
         setLoading(false);
       }
     } catch (error) {
-      showErrorToast("Network error. Please try again later.");
+      showErrorToast("Something went wrong. Please try again.");
       setLoading(false);
     }
   };
@@ -60,12 +85,11 @@ const Login = () => {
       <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
       <div className="flex justify-center mb-6">
       <img
-        src="http://localhost:5174/src/assets/plumeriaresortimages/Logo_RRPL_New.png"
+        src="https://plumeriaresort.in/assets/Logo_RRPL_New-BuMOlKU-.png"
         alt="Company Logo"
         className="h-20"
       />
     </div>
-
         {/* <h1 className="text-4xl font-semibold mb-4 text-center">Admin Login</h1> */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
       Admin Panel Login

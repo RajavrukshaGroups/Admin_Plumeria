@@ -7,6 +7,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+
 import AdminLogin from "../../Admin_Plumeria/src/pages/adminlogin";
 import Dashboard from "./components/dashboard";
 import AddRoomdetails from "./components/addRoomdetails";
@@ -25,6 +26,7 @@ import ViewBookingDetails from "./components/viewBookingDetails";
 import BookingListByDate from "./components/bookingDetailsByDate";
 import EditBookingDetails from "./components/editBookingDetails";
 import ContactForm from "./components/mailPilot";
+
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
@@ -48,7 +50,7 @@ function MainLayout({ sidebarOpen, setSidebarOpen }) {
           !isLoginPage && sidebarOpen ? "ml-56" : "ml-0"
         }`}
         // Adjust margin based on sidebar state
-      >
+>
         <Routes>
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route

@@ -1,6 +1,5 @@
+
 import axiosInstance from ".././api/interceptors";
-
-
 
 export const Signin = async ( email, password ) => {
   try {
@@ -10,16 +9,13 @@ export const Signin = async ( email, password ) => {
     });
     return response; 
   } catch (error) {
-    throw error; 
+    return error.response.data
     }
  };
 
-
 // services/roomService.js
 
-
 export const editRoomDetails = async (roomId, formData ) => {
-
   try {
     const response = await axiosInstance.put(`/admin/editSaveroom/${roomId}`, formData,{
       headers: {
