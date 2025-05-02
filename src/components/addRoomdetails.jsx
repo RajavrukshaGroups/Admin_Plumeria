@@ -5,7 +5,6 @@ import { addRoomDetails,getAllRoomTypes } from "../api/auth";
 import axiosInstance from "../api/interceptors";
 import { showSuccessToast,showErrorToast  } from "../../src/components/utils/toastHelper"; // Adjust path as needed
 
-
 function AddRoomdetails() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -31,7 +30,6 @@ function AddRoomdetails() {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [roomDatas, setRoomDatas] = useState([]);
-
   const [menuDetails, setMenuDetails] = useState({
     welcomeDrinks: [],
     breakFast: [],
@@ -44,36 +42,23 @@ function AddRoomdetails() {
       try {
         const data = await getAllRoomTypes();
         const response = await axiosInstance.get("/rooms");
-        console.log(response.data, 'this is the room data');
-        console.log(data, 'this is the fetched roomtypes');
-  
         setRoomDatas(response.data); // Save rooms to state
         setRoomTypes(data);
       } catch (err) {
         console.error("Failed to load room types", err);
       }
     }
-  
     fetchRoomTypes();
   }, []);
-
-
-  console.log(amenities,'amenities check')
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-  
     const totalFiles = files.length + selectedFiles.length;
     if (totalFiles > 4) {
       showErrorToast("You can only upload up to 4 images.");
       return;
     }
-  
     const updatedFiles = [...files, ...selectedFiles];
-    console.log("Updated Files State:", updatedFiles); // Log the updated files state
-  
     const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-    console.log("Generated Previews:", newPreviews); // Log the generated preview URLs
-  
     setFiles(updatedFiles);
     setPreviews((prev) => [...prev, ...newPreviews]);
   };
@@ -81,15 +66,12 @@ function AddRoomdetails() {
   const removeImage = (index) => {
     const updatedFiles = [...files];
     const updatedPreviews = [...previews];
-  
     updatedFiles.splice(index, 1);
     updatedPreviews.splice(index, 1);
-  
     setFiles(updatedFiles);
     setPreviews(updatedPreviews);
   };
   
-
   const handleAddAmenity = () => {
     if (inputValue.trim() !== "" && !amenities.includes(inputValue.trim())) {
       setAmenities([...amenities, inputValue.trim()]);
@@ -134,20 +116,12 @@ function AddRoomdetails() {
     updatedPlans[index][field] = value;
     setPlans(updatedPlans);
   };
-  const handleMenuChange = (e, type) => {
-    const values = e.target.value.split(',').map(item => item.trim());
-    setMenuDetails(prev => ({
-      ...prev,
-      [type]: values
-    }));
-  };
+
   const handleMenuDetailChange = (index, type, value) => {
     const updatedPlans = [...plans];
     updatedPlans[index].menuDetails[type] = value.split(',').map(item => item.trim());
     setPlans(updatedPlans);
   };
-  
-  
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -156,7 +130,6 @@ const handleSubmit = async (e) => {
       showErrorToast("Please fill out all required fields.");
       return;
     }
-    
   if (files.length === 0) {
     showErrorToast("Please upload at least one image.");
     return;
@@ -165,14 +138,11 @@ const handleSubmit = async (e) => {
     showErrorToast("Please add at least one plan.");
     return;
   }
-
-   // Optional: check numeric fields
    if (isNaN(maxRoomsAvailable) || maxRoomsAvailable <= 0) {
     showErrorToast("Max rooms must be a positive number.");
     return;
   }
-
-  setLoading(true) ; // Show loader
+  setLoading(true) ; 
   const roomData = {
     roomType,
     maxRoomsAvailable: parseInt(maxRoomsAvailable, 10),
@@ -226,7 +196,6 @@ const handleSubmit = async (e) => {
   }
 };
 const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text-sm rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 px-4 py-3 transition-all duration-300 shadow-sm";
-
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-200 min-h-screen flex items-center justify-center p-4">
   <div className="bg-white w-full max-w-6xl mx-auto rounded-3xl border border-gray-200 shadow-2xl px-10 py-16">
@@ -236,12 +205,10 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
     </h1>
   </div>
         <form onSubmit={handleSubmit}>
-        
             <div className="mb-6 w-full lg:w-1/2 mx-auto bg-white border border-gray-200 shadow-md rounded-xl p-6">
               <label className="block text-base font-semibold text-gray-700 :text-gray-900 mb-2">
                 Room Type
               </label>
-             
                 <div>
                   <select
                     className="appearance-none w-full bg-white dark:bg-gray-200 border border-gray-300 text-gray-800 rounded-lg px-4 py-3 pr-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
@@ -252,7 +219,6 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     
                             {roomTypes.map((type, index) => {
                           const isDisabled = roomDatas.some(room => room.roomType === type.name);
-
                           return (
                             <option key={index} value={type.name} disabled={isDisabled}>
                               {type.name} {isDisabled ? '(Already Added)' : ''}
@@ -261,9 +227,7 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                         })}
                           </select>
                         </div>
-
                             </div>
-                            
                             {loading ? (
                     <div className="text-center py-4">
                       <svg
@@ -290,145 +254,72 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     </div>
                   ) : (
                     <>
-
-         
-            <>
-              {/* Room Info and Max Rooms */}
-              {/* <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Room Info
-            </label>
-            <input
-                  className={inputClass}
-                  type="text"
-                  placeholder="Room Info"
-                  value={roomInfo}
-                  onChange={(e) => setRoomInfo(e.target.value)}
-                />
-            </div>
-            <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Bed
-            </label>
-            <input
-                  className={inputClass}
-                  type="text"
-                  placeholder="Room Info"
-                  value={bedType}
-                  onChange={(e) => setBedType(e.target.value)}
-                />
-            </div>
-            <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-            Max Rooms
-            </label>
-            <input
-                  className={inputClass}
-                  type="number"
-                  placeholder="Max Rooms Available"
-                  value={maxRoomsAvailable}
-                  onChange={(e) => setMaxRoomsAvailable(e.target.value)}
-                />
-
-
-            </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Check-in Time
-                  </label>
-                  <input
-                    className={inputClass}
-                    type="time"
-                    placeholder="Check-in Time"
-                    value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                  />
-                </div>
-              </div> */}
-              {/* Check-in and Check-out Time Inputs */}
-              {/* <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Check-out Time
-                  </label>
-                  <input
-                    className={inputClass}
-                    type="time"
-                    placeholder="Check-out Time"
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                  />
-                </div>
-                
-              </div> */}
-              
+                     <>
               <div className="grid grid-cols-2 gap-4 mb-6">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Room Info</label>
-    <input
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-      type="text"
-      placeholder="Room Info"
-      value={roomInfo}
-      onChange={(e) => setRoomInfo(e.target.value)}
-      disabled={!roomType}
-    />
-  </div>
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Bed</label>
-    <input
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-      type="text"
-      placeholder="Bed Type"
-      value={bedType}
-      onChange={(e) => setBedType(e.target.value)}
-      disabled={!roomType}
-    />
-  </div>
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Max Rooms</label>
-    <input
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-      type="number"
-      placeholder="Max Rooms Available"
-      value={maxRoomsAvailable}
-      onChange={(e) => setMaxRoomsAvailable(e.target.value)}
-      disabled={!roomType}
-    />
-  </div>
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Time</label>
-    <input
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-      type="time"
-      value={checkIn}
-      onChange={(e) => setCheckIn(e.target.value)}
-      disabled={!roomType}
-    />
-  </div>
-</div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Room Info</label>
+                          <input
+                            className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="text"
+                            placeholder="Room Info"
+                            value={roomInfo}
+                            onChange={(e) => setRoomInfo(e.target.value)}
+                            disabled={!roomType}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Bed</label>
+                          <input
+                            className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="text"
+                            placeholder="Bed Type"
+                            value={bedType}
+                            onChange={(e) => setBedType(e.target.value)}
+                            disabled={!roomType}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Max Rooms</label>
+                          <input
+                            className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="number"
+                            placeholder="Max Rooms Available"
+                            value={maxRoomsAvailable}
+                            onChange={(e) => setMaxRoomsAvailable(e.target.value)}
+                            disabled={!roomType}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Check-in Time</label>
+                          <input
+                            className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="time"
+                            value={checkIn}
+                            onChange={(e) => setCheckIn(e.target.value)}
+                            disabled={!roomType}
+                          />
+                        </div>
+                      </div>
 
-<div className="grid grid-cols-2 gap-4 mb-6">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Time</label>
-    <input
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-      type="time"
-      value={checkOut}
-      onChange={(e) => setCheckOut(e.target.value)}
-      disabled={!roomType}
-    />
-  </div>
-</div>
-
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Check-out Time</label>
+                          <input
+                            className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            type="time"
+                            value={checkOut}
+                            onChange={(e) => setCheckOut(e.target.value)}
+                            disabled={!roomType}
+                          />
+                        </div>
+                      </div>
               <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                                      Images
-                                    </label>
+                      Images
+                    </label>
                   <div className="flex items-center justify-center w-full">
-                    
-                      <label for="dropzone-file" className="flex  flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 :hover:bg-gray-800 :bg-gray-700 hover:bg-gray-300 :border-gray-600 :hover:border-gray-500 :hover:bg-gray-600">
+                      <label for="dropzone-file"
+                      className={`${'flex  flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 :hover:bg-gray-800 :bg-gray-700 hover:bg-gray-300 :border-gray-600 :hover:border-gray-500 :hover:bg-gray-600'} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}>
                           <div className="flex flex-col items-center justify-center pt-5 pb-6">
                               <svg className="w-8 h-8 mb-4 text-gray-500 :text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
@@ -458,16 +349,13 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                         ))}
                       </div>
                     </div>
-              {/* Amenities */}
               <div className="mb-6">
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Amenities
                 </label>
                 <div className="flex gap-2 mb-3">
                   <input
-                    // className="flex-1 bg-gray-200 border border-gray-300 rounded py-3 px-4"
-      className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
-
+                   className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
                     type="text"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
@@ -503,19 +391,12 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                 </label>
               <div className="grid grid-cols-2 gap-4 mb-6">
                  <input
-                  className={inputClass}
+                  className={`${inputClass} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
                   type="text"
                   placeholder="Terms (comma separated)"
                   value={terms}
                   onChange={(e) => setTerms(e.target.value)}
                 />
-                {/* <input
-                  className="input"
-                  type="text"
-                  placeholder="Bed Type (King/Queen)"
-                  value={bedType}
-                  onChange={(e) => setBedType(e.target.value)}
-                /> */}
               </div>
               <section>
                       <label
@@ -526,38 +407,37 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                       </label>
                       <div className="grid grid-cols-3 gap-4">
                         <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          // className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          className={`${'w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3'} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        
                           type="number"
                           placeholder="Max Persons"
                           onChange={(e) => setMaxPersons(e.target.value)}
                         />
                         <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          // className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          className={`${'w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3'} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
                           type="number"
                           placeholder="Max Adults"
                           onChange={(e) => setMaxAdults(e.target.value)}
                         />
                         <input
-                          className="w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3"
+                          className={`${'w-full bg-gray-200 text-black border border-gray-200 rounded py-3 px-4 mb-3'} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
                           type="number"
                           placeholder="Max Children"
                           onChange={(e) => setMaxChildren(e.target.value)}
                         />
                       </div>
                     </section>
-
               {/* Plans */}
               <div className="mb-6">
                 <h3 className="text-lg font-bold mb-4">Plans</h3>
                 {plans.map((plan, index) => (
-                  // <div key={index} className="border p-4 mb-4 rounded">
                   <div key={index} className="bg-gray-50 p-6 rounded-xl shadow-inner mb-6">
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Plan Name
                     </label>
                     <div className="flex justify-between items-center mb-4">
-                      
                       <input
                         className={inputClass}
                         type="text"
@@ -575,7 +455,6 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                         Remove
                       </button>
                     </div>
-                    
                     <div className="grid grid-cols-2 gap-4 mb-4 items-center">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -605,7 +484,6 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     }
                     />
                     </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Two Guests With GST
@@ -666,8 +544,6 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                     </div>
                   ))}
                 </div>
-
-                    
                     <div className="flex gap-4 flex-wrap">
                       {["WiFi", "Breakfast", "Spa", "Taxes Included"].map((service) => (
                         <label key={service} className="flex items-center gap-2 text-sm">
@@ -691,14 +567,12 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
                 <button
                   type="button"
                   onClick={handleAddPlan}
-                  className="bg-green-500 text-white px-4 py-2 rounded"
+                  className={`${'bg-green-500 text-white px-4 py-2 rounded'} ${!roomType ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   Add Plan
                 </button>
               </div>
             </>
-      
-
           <button
             type="submit"
             className="mt-10 bg-blue-600 hover:bg-blue-700 text-white font-bold flex m-auto py-3 px-6 rounded-lg"
@@ -706,14 +580,10 @@ const inputClass = "w-full bg-gray-200 border border-gray-300 text-gray-800 text
             Save Room
           </button>
              </>
-
             )}
         </form>
       </div>
     </div>
   );
 }
-
-
-
 export default AddRoomdetails;
