@@ -12,7 +12,6 @@ import {
 } from "redux-persist";
 
 import storage from "redux-persist/lib/storage"; // defaults to localStorage
-
 const persistConfig = {
   key: "root",
   storage,

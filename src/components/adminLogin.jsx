@@ -60,6 +60,7 @@ const Login = () => {
         dispatch(loginSuccess({ token: data.token, user: data.user }));
         setTimeout(() => {
           showSuccessToast("Login Successful");
+          
           setLoading(false);
           navigate("/");
         }, 2000);
