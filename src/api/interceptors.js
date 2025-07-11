@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   // baseURL:"https://server.plumeriaresort.in",
   headers: {
     "Content-Type": "application/json",
-    },
+  },
 });
 
 axiosInstance.interceptors.request.use(
