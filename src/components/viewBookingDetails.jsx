@@ -9,6 +9,8 @@ const ViewBookingDetails = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
+  console.log("booking details", bookingDetails);
+
   const navigate = useNavigate();
 
   const fetchBookings = async (pageNum) => {
@@ -35,6 +37,13 @@ const ViewBookingDetails = () => {
     if (newPage > 0 && newPage <= totalPages) {
       setPage(newPage);
     }
+  };
+
+  const handleViewInvoice = (bookingId) => {
+    console.log("bookingId", bookingId);
+    // const url = `http://localhost:3000/rooms/receipt/${bookingId}`;
+    const url = `https://server.plumeriaresort.in/rooms/receipt/${bookingId}`;
+    window.open(url, "_blank");
   };
 
   return (
@@ -98,6 +107,26 @@ const ViewBookingDetails = () => {
                 <p>
                   <strong>Phone:</strong> {booking.contactInfo.phone}
                 </p>
+                <p>
+                  <strong>Address:</strong>{" "}
+                  {booking.contactInfo.customerAddress}
+                </p>
+                <p>
+                  <strong>Aadhar Number:</strong>{" "}
+                  {booking.contactInfo.customerAadharNumber}
+                </p>
+                {booking.contactInfo.customerPanNumber && (
+                  <p>
+                    <strong>Pan Number:</strong>
+                    {booking.contactInfo.customerPanNumber}
+                  </p>
+                )}
+                {booking.contactInfo.gstNumber && (
+                  <p>
+                    <strong>GST Number:</strong>
+                    {booking.contactInfo.gstNumber}
+                  </p>
+                )}
               </div>
 
               <div className="mt-2 text-sm">
@@ -135,7 +164,7 @@ const ViewBookingDetails = () => {
                 </div>
               )}
 
-              <div className="mt-4">
+              {/* <div className="mt-4">
                 <a
                   href={booking.invoicePdfUrl}
                   target="_blank"
@@ -144,6 +173,14 @@ const ViewBookingDetails = () => {
                 >
                   View Invoice
                 </a>
+              </div> */}
+              <div className="mt-4">
+                <button
+                  onClick={() => handleViewInvoice(booking?.bookingId)}
+                  className="inline-block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-600 rounded-md"
+                >
+                  View Invoice
+                </button>
               </div>
             </div>
           ))}

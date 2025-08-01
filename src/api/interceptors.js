@@ -4,7 +4,7 @@ import store from "../redux/store";
 
 const axiosInstance = axios.create({
   // baseURL: "http://localhost:3000",
-  baseURL:"https://server.plumeriaresort.in",
+  baseURL: "https://server.plumeriaresort.in",
   headers: {
     "Content-Type": "application/json",
   },

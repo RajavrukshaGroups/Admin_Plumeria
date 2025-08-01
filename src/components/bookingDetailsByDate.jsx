@@ -11,6 +11,8 @@ const BookingListByDate = () => {
   const [showGuestDetails, setShowGuestDetails] = useState(false);
   const checkInDate = searchParams.get("checkInDate");
 
+  console.log("booking details", bookings);
+
   useEffect(() => {
     if (!checkInDate) return;
 
@@ -33,6 +35,12 @@ const BookingListByDate = () => {
   const handleShowGuestDetails = (booking) => {
     setSelectedBooking(booking);
     setShowGuestDetails(true);
+  };
+
+  const handleViewInvoice = (bookingId) => {
+    // const url = `http://localhost:3000/rooms/receipt/${bookingId}`;
+    const url = `https://server.plumeriaresort.in/rooms/receipt/${bookingId}`;
+    window.open(url, "_blank");
   };
 
   return (
@@ -129,7 +137,7 @@ const BookingListByDate = () => {
                       <td className="px-2 py-2 whitespace-nowrap">
                         {b.domainName || "-"}
                       </td>
-                      <td className="px-2 py-2 text-center whitespace-nowrap">
+                      {/* <td className="px-2 py-2 text-center whitespace-nowrap">
                         {b.invoicePdfUrl ? (
                           <a
                             href={b.invoicePdfUrl}
@@ -142,6 +150,14 @@ const BookingListByDate = () => {
                         ) : (
                           <span className="text-gray-400 italic">-</span>
                         )}
+                      </td> */}
+                      <td className="px-2 py-2 text-center whitespace-nowrap">
+                        <button
+                          className="inline-block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-600 rounded-md"
+                          onClick={() => handleViewInvoice(b.bookingId)}
+                        >
+                          View Invoice
+                        </button>
                       </td>
                     </tr>
                   );

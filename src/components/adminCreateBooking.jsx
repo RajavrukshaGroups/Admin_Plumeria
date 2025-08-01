@@ -19,6 +19,10 @@ const AdminCreateBooking = () => {
     contactInfo: {
       email: "",
       phone: "",
+      customerAddress: "",
+      customerPanNumber: "",
+      customerAadharNumber: "",
+      gstNumber: "",
     },
     domainName: "",
     checkInDate: "",
@@ -124,6 +128,12 @@ const AdminCreateBooking = () => {
 
     if (formData.totalCost <= 0) {
       errors.totalCost = "Total cost must be greater than 0";
+    }
+
+    if (formData.contactInfo.customerAadharNumber) {
+      if (!/^\d{12}$/.test(formData.contactInfo.customerAadharNumber)) {
+        errors.customerAadharNumber = "Aadhar number must be exactly 12 digits";
+      }
     }
 
     setValidationErrors(errors);
@@ -252,7 +262,18 @@ const AdminCreateBooking = () => {
           phone: numericValue,
         },
       }));
-      return;
+
+      if (name === "contactInfo.customerAadharNumber") {
+        const numericValue = value.replace(/\D/g, "").slice(0, 12);
+        setFormData((prev) => ({
+          ...prev,
+          contactInfo: {
+            ...prev.contactInfo,
+            customerAadharNumber: numericValue,
+          },
+        }));
+        return;
+      }
     }
 
     setFormData((prev) => {
@@ -319,6 +340,10 @@ const AdminCreateBooking = () => {
           lastName,
           email: formData.contactInfo.email,
           phone: formData.contactInfo.phone,
+          customerAddress: formData.contactInfo.customerAddress,
+          customerPanNumber: formData.contactInfo.customerPanNumber,
+          customerAadharNumber: formData.contactInfo.customerAadharNumber,
+          gstNumber: formData.contactInfo.gstNumber,
           specialRequests: formData.specialRequests[0] || "",
         },
         advancePayment: Number(formData.payment.amountPaid),
@@ -430,6 +455,56 @@ const AdminCreateBooking = () => {
                     : null
                 }
                 required
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TextInput
+                icon={<FaEnvelope />}
+                type="text"
+                label="Customer Address"
+                name="contactInfo.customerAddress"
+                value={formData.contactInfo.customerAddress}
+                onChange={handleInputChange}
+                required
+              />
+              <TextInput
+                icon={<FaEnvelope />}
+                label="Aadhar Number"
+                name="contactInfo.customerAadharNumber"
+                value={formData.contactInfo.customerAadharNumber}
+                onChange={(e) => {
+                  const numericValue = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 12);
+                  setFormData((prev) => ({
+                    ...prev,
+                    contactInfo: {
+                      ...prev.contactInfo,
+                      customerAadharNumber: numericValue,
+                    },
+                  }));
+                }}
+                error={validationErrors.customerAadharNumber}
+                required
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TextInput
+                icon={<FaEnvelope />}
+                type="text"
+                label="PAN Number (Optional)"
+                name="contactInfo.customerPanNumber"
+                value={formData.contactInfo.customerPanNumber}
+                onChange={handleInputChange}
+                // required
+              />
+              <TextInput
+                icon={<FaEnvelope />}
+                label="GST Number (Optional)"
+                name="contactInfo.gstNumber"
+                value={formData.contactInfo.gstNumber}
+                onChange={handleInputChange}
+                // required
               />
             </div>
           </div>
