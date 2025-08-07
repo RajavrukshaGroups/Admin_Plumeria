@@ -100,6 +100,12 @@ const BookingListByDate = () => {
                     0
                   );
 
+                  // Calculate GST rate and amounts
+                  const gstRate =
+                    b.totalCost > 7000 ? 0.18 : b.totalCost > 0 ? 0.12 : 0;
+                  const gstAmount = (b.totalCost * gstRate).toFixed(2);
+                  const totalWithGst = (b.totalCost * (1 + gstRate)).toFixed(2);
+
                   return (
                     <tr key={b._id} className="hover:bg-yellow-50">
                       <td className="px-2 py-2 font-medium text-gray-900 whitespace-nowrap">
@@ -122,8 +128,19 @@ const BookingListByDate = () => {
                           </button>
                         </div>
                       </td>
+                      {/* Show amounts with GST calculations */}
                       <td className="px-2 py-2 text-right whitespace-nowrap font-medium text-green-600">
-                        ₹{b.totalCost}
+                        <div>Subtotal: ₹{b.totalCost.toFixed(2)}</div>
+                        {gstRate > 0 && (
+                          <>
+                            <div className="text-xs text-gray-600">
+                              GST ({(gstRate * 100).toFixed(0)}%): ₹{gstAmount}
+                            </div>
+                            <div className="font-semibold">
+                              Total: ₹{totalWithGst}
+                            </div>
+                          </>
+                        )}
                       </td>
                       <td className="px-2 py-2 text-right whitespace-nowrap font-medium text-green-600">
                         ₹{b.payment?.amountPaid}
@@ -137,20 +154,6 @@ const BookingListByDate = () => {
                       <td className="px-2 py-2 whitespace-nowrap">
                         {b.domainName || "-"}
                       </td>
-                      {/* <td className="px-2 py-2 text-center whitespace-nowrap">
-                        {b.invoicePdfUrl ? (
-                          <a
-                            href={b.invoicePdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 text-xs font-semibold"
-                          >
-                            PDF
-                          </a>
-                        ) : (
-                          <span className="text-gray-400 italic">-</span>
-                        )}
-                      </td> */}
                       <td className="px-2 py-2 text-center whitespace-nowrap">
                         <button
                           className="inline-block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-600 rounded-md"

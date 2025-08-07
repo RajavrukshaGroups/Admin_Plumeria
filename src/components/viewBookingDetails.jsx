@@ -96,8 +96,29 @@ const ViewBookingDetails = () => {
                   </span>
                 </p>
                 <p>
-                  <strong>Total Cost:</strong> ₹{booking.totalCost}
+                  <strong>Sub Total:</strong> ₹{booking.totalCost.toFixed(2)}
                 </p>
+                {booking.totalCost > 0 && (
+                  <>
+                    <p>
+                      <strong>
+                        GST ({booking.totalCost > 7000 ? 18 : 12}%):
+                      </strong>{" "}
+                      ₹
+                      {(
+                        booking.totalCost *
+                        (booking.totalCost > 7000 ? 0.18 : 0.12)
+                      ).toFixed(2)}
+                    </p>
+                    <p>
+                      <strong>Total Cost:</strong> ₹
+                      {(
+                        booking.totalCost *
+                        (1 + (booking.totalCost > 7000 ? 0.18 : 0.12))
+                      ).toFixed(2)}
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="mt-2 text-sm">
