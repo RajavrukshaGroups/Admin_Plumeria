@@ -17,6 +17,7 @@ const ContactForm = () => {
     to: [],
     attachment: null,
   });
+  const [images, setImages] = useState([]);
 
   console.log("formdata", formData.to);
 
@@ -129,6 +130,34 @@ const ContactForm = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    const validTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+    ];
+
+    const filtered = files.filter((file) => {
+      if (!validTypes.includes(file.type)) {
+        toast.error(`Invalid type: ${file.name}`);
+        return false;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`File too large: ${file.name}`);
+        return false;
+      }
+      return true;
+    });
+
+    setImages((prev) => [...prev, ...filtered]);
+  };
+
+  const removeImage = (i) =>
+    setImages((prev) => prev.filter((_, idx) => idx !== i));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -158,6 +187,10 @@ const ContactForm = () => {
       if (formData.attachment) {
         formDataToSend.append("attachment", formData.attachment);
       }
+
+      images.forEach((img) => {
+        formDataToSend.append("images", img);
+      });
 
       // Make the API call
       const response = await axiosInstance.post(
@@ -201,6 +234,8 @@ const ContactForm = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      setEmailError("");
+      setFileError("");
     } catch (error) {
       console.error("Error sending emails:", error);
       toast.error(error.data?.message);
@@ -315,6 +350,39 @@ const ContactForm = () => {
             <p className="text-xs text-gray-500 text-right mt-1">
               {charCount}/500 characters
             </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Images (Optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              className="block w-full text-sm"
+            />
+            {images.length > 0 && (
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {images.map((img, i) => (
+                  <div key={i} className="relative">
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt=""
+                      className="h-16 w-16 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
